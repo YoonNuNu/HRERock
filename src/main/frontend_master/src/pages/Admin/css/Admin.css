@@ -1,0 +1,57 @@
+.container {
+    width: 200px;
+    border: 1px solid gray;
+}
+.rowControlBtn {
+    width: 80px;
+    height: 32px;
+    background-color: tomato;
+    border: none;
+    border-radius: 4px;
+    margin-right: 8px;
+    margin-bottom: 4px;
+}
+.grid {
+    display: grid;
+    grid-template-columns: 36px 1fr 2fr;
+    height: 30px;
+}
+
+.header {
+    border-bottom: 1.5px solid gray;
+    border-right: 1px solid gray;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.header:nth-last-of-type(1) {
+    border-right: none;
+}
+
+.row {
+    border-bottom: 1px solid gray;
+}
+.row:nth-last-of-type(1) {
+    border-bottom: none;
+}
+
+.cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid gray;
+}
+
+.cell:nth-last-of-type(1) {
+    border-right: none;
+}
+
+.checkBox {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

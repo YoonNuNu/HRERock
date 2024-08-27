@@ -1,0 +1,470 @@
+.movie {
+    width: 1200px;
+    position: relative;
+    display: flex;
+    margin-top: 10px;
+    color: white;
+}
+
+/* 뒷 배경 */
+.movie_bg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    object-fit: cover;
+    opacity: 0.3;
+}
+
+.book_mark {
+    position: absolute;
+    right: calc(0% + 30px);
+    top: calc(0% + 150px);
+    display: flex;
+    align-items: center;
+}
+
+.book_mark button {
+    width: 50px;
+    height: 50px;
+    margin: 0;
+    padding: 0px;
+    font-size: 30px;
+    line-height: 50px;
+    background: none;
+    outline: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.book_mark span {
+    margin-left: 5px;
+    font-size: 16px;
+    color: white;
+}
+
+/* 영화 상세 설명 */
+.movie_explain {
+    width: 60%;
+    display: flex;
+    margin: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 1;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.explainDiv {
+    width: 100%;
+}
+
+.explain {
+    width: 100%;
+}
+
+.explainUl li {
+    width: 95%;
+    margin: 10px 0;
+}
+
+.movieTitle {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.movieDirector ul,
+.movieActors ul {
+    display: flex;
+    overflow-x: auto;
+    padding: 10px 0;
+}
+
+.MovieDirectorImg,
+.MovieActorImg {
+    width: 100px;
+    height: 150px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px #4d7381;
+    margin-right: 10px;
+}
+
+/* 탭 메뉴 영역 */
+.tabs {
+    display: flex;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.tabs button {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.tabs button.active {
+    background: rgba(0, 34, 68, 0.5);
+    border-radius: 5px;
+}
+
+/* 탭 내용 영역 */
+.tabDiv {
+    width: 100%;
+    margin-top: 20px;
+}
+
+/*차트*/
+.chart-container {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.chart-container img {
+    width: 200px;
+    height: auto;
+}
+
+
+/* 리뷰 */
+.review_ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.review_ul li {
+    background: rgba(255, 255, 255, 0.1);
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.reviewWriter {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.reviewContent {
+    margin: 5px 0;
+}
+
+.reviewTime {
+    font-size: 0.8em;
+    color: #aaa;
+}
+
+.reviewStar {
+    color: gold;
+}
+
+.review-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+}
+
+.review-content {
+    display: flex;
+    flex-grow: 1;
+}
+
+.review-content span {
+    margin-right: 15px;
+}
+
+.reviewWriter {
+    font-weight: bold;
+    width: 100px;
+}
+
+.reviewContent {
+    flex-grow: 1;
+}
+
+.reviewStar {
+    width: 50px;
+    color: gold;
+}
+
+.reviewTime {
+    width: 200px;
+    font-size: 0.8em;
+    color: #aaa;
+}
+
+.review_actions {
+    display: flex;
+}
+
+.like_button {
+    display: flex;
+    align-items: center;
+}
+
+.like_button button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2em;
+    padding: 5px;
+    margin-right: 5px;
+}
+
+.like_button span {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.review_actions button {
+    margin-left: 10px;
+    background: none;
+    border: 1px solid white;
+    color: white;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.review_actions button:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* 리뷰 입력 폼 스타일 */
+.review-input {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.review-input textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    background: rgba(255, 255, 255, 0.8);
+    color: #333;
+}
+
+.review-input input[type="number"] {
+    width: 60px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+/* 포인트 체크박스 스타일 */
+.points-section {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.attraction-points, .emotion-points {
+    flex: 1;
+}
+
+.points-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #fff;
+}
+
+.points-checkboxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.points-checkboxes label {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 5px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.points-checkboxes label:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.points-checkboxes input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+/* 리뷰 작성/수정 버튼 스타일 */
+.review-input button {
+    padding: 10px 20px;
+    background: #0080ff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.review-input button:hover {
+    background: #30fff5;
+}
+
+.review-input button:active {
+    background: #02abb1;
+}
+
+/*.review-input {*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    gap: 10px;*/
+/*    margin-bottom: 10px;*/
+/*}*/
+
+/*.review-input textarea {*/
+/*    width: 100%;*/
+/*    min-height: 50px;*/
+/*    padding: 5px;*/
+/*    resize: vertical;*/
+/*}*/
+
+/*.review-input input[type="number"] {*/
+/*    width: 50px;*/
+/*    text-align: center;*/
+/*    margin-bottom: 5px;*/
+/*}*/
+
+/*.review-input button {*/
+/*    padding: 5px 10px;*/
+/*}*/
+.sort-tabs {
+    margin-bottom: 15px;
+}
+
+.sort-tabs button {
+    padding: 5px 10px;
+    margin-right: 10px;
+    border: none;
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
+
+.sort-tabs button.active {
+    background-color: #007bff;
+    color: white;
+}
+
+.pagination {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    font-size: 14px;
+}
+
+.pagination button {
+    margin: 0 10px; /* 버튼 간의 간격을 늘림 */
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 50%; /* 동그란 배경 */
+    border: solid 1px #ddd;
+    text-align: center;
+    background: #fff;
+    color: #333;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pagination button:hover {
+    background: #f0f0f0;
+}
+
+.pagination button.active {
+    background: #2f5d62 !important;
+    color: white !important;
+    border: none;
+}
+
+.move button {
+    width: auto;
+    padding: 0 15px;
+    border-radius: 50%; /* 동그란 배경 */
+}
+
+.move:first-child button::before {
+    content: "<";
+    font-size: 16px;
+}
+
+.move:last-child button::after {
+    content: ">";
+    font-size: 16px;
+}
+
+
+
+/* 예고편 */
+.trailer {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.trailer video {
+    width: 100%;
+    max-height: 400px;
+}
+
+/* 배경을 위한 빈공간 */
+.bg {
+    width: 40%;
+}
+
+/* 재생 버튼 */
+.watch_movie_btn {
+    width: 200px;
+    height: 50px;
+    border: none;
+    border-radius: 10px;
+    background-color: #0080ff;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.button {
+    position: absolute;
+    bottom: 7%;
+    left: 73%;
+}
+
+.watch_movie_btn:hover {
+    background-color: #30fff5;
+}
+
+.watch_movie_btn:active {
+    background-color: #02abb1;
+}
