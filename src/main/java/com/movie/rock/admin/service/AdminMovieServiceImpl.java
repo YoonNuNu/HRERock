@@ -8,15 +8,17 @@ import com.movie.rock.common.CommonException.MovieNotFoundException;
 import com.movie.rock.movie.data.entity.*;
 import com.movie.rock.movie.data.repository.*;
 import com.movie.rock.movie.data.response.MovieInfoResponseDTO.*;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -57,48 +59,48 @@ public class AdminMovieServiceImpl implements AdminMovieService {
 
     private final DirectorsPhotosRepository directorsPhotosRepository;
 
+    private final MovieReviewRepository movieReviewRepository;
 
-    // 페이징 처리된 영화 목록을 조회
+    private final ReviewLikesRepository reviewLikesRepository;
+
+    private final MovieReviewAttractionPointsRepository attractionPointsRepository;
+
+    private final MovieReviewEmotionPointsRepository emotionPointsRepository;
+
+    private final MovieWatchHistoryRepository movieWatchHistoryRepository;
+
+    private final MovieFavorRepository movieFavorRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    // 영화관리 페이징 조회
     @Override
     public Page<AdminMovieListResponseDTO> getMovieList(Pageable pageable) {
+        // 페이징 처리된 모든 영화를 조회
         Page<MovieEntity> moviePage = movieRepository.findAll(pageable);
-        return moviePage.map(AdminMovieListResponseDTO::fromEntity);
+        // 각 영화 엔티티를 DTO로 변환하여 반환
+        return moviePage.map(movie -> AdminMovieListResponseDTO.fromEntity(movie, movieWatchHistoryRepository));
     }
 
-    // 영화 제목, 감독 이름, 장르로 영화를 검색
-//    @Override
-//    public Page<AdminMovieListResponseDTO> search(AdminMovieListSearchRequestDTO searchData
-//            , Pageable pageable) {
-//        Page<MovieEntity> result = null;
-//        if (!searchData.getMovieTitle().isEmpty()) {  //영화 제목 검색
-//            result = adminMovieListRepository.findAllMovieTitle(searchData.getMovieTitle(), pageable);
-//        } else if (!searchData.getDirectorName().isEmpty()) { //영화 감독 검색
-//            result = adminMovieListRepository.findAllByDirectorName(searchData.getDirectorName(), pageable);
-//        } else if (!searchData.getMovieGenres().isEmpty()) {    //영화 장르 검색
-//            result = adminMovieListRepository.findAllGenres(searchData.getMovieGenres(), pageable);
-//        }
-//        List<AdminMovieListResponseDTO> adminMovieList = result.getContent().stream()
-//                .map(AdminMovieListResponseDTO::fromEntity)
-//                .collect(Collectors.toList());
-//        return new PageImpl<>(adminMovieList, pageable, result.getTotalElements());
-//    }
-
-    //통합검색
+    // 영화 관리페이지 통합 검색
     @Override
     public Page<AdminMovieListResponseDTO> findByAllSearch(String searchTerm, Pageable pageable) {
+        // 검색어를 이용해 영화를 검색
         Page<MovieEntity> result = adminMovieListRepository.findByAllSearch(searchTerm, pageable);
-        return result.map(AdminMovieListResponseDTO::fromEntity);
+        // 검색 결과를 DTO로 변환하여 반환
+        return result.map(movie -> AdminMovieListResponseDTO.fromEntity(movie, movieWatchHistoryRepository));
     }
-
     //영화 상세보기
     @Override
     public AdminMovieDetailsResponseDTO getMovieDetails(Long movieId) {
+        // 주어진 ID로 영화를 찾음. 없으면 예외 발생
         MovieEntity findMovie = movieRepository.findById(movieId)
                 .orElseThrow(MovieNotFoundException::new);
 
+        // 찾은 영화 엔티티를 DTO로 변환하여 반환
         return AdminMovieDetailsResponseDTO.fromEntity(findMovie);
     }
-
     //영화 추가(첫번째 페이지 이름,아이디)
     @Override
     public AdminMovieFirstInfoTitleResponseDTO saveTitleInfo(AdminMovieFirstInfoTitleRequestDTO requestDTO) {
@@ -278,14 +280,14 @@ public class AdminMovieServiceImpl implements AdminMovieService {
 //        log.info("Adding complete movie with ID: {}", requestDTO.getMovieId());
         MovieEntity movie = movieRepository.findById(requestDTO.getMovieId())
                 .orElseThrow(MovieNotFoundException::new);
-
+        MovieFilmEntity savedMovieFilm = null;
         // 영화 파일 정보 업데이트
         if (requestDTO.getMovieFilm() != null) {
             MovieFilmEntity movieFilm = MovieFilmEntity.builder()
                     .movieFilm(requestDTO.getMovieFilm().getMovieFilm())
                     .movie(movie)
                     .build();
-            movieFilmRepository.save(movieFilm);
+            savedMovieFilm = movieFilmRepository.save(movieFilm);
 //            log.info("Saved movie film: {}", movieFilm);
         }
 
@@ -334,12 +336,11 @@ public class AdminMovieServiceImpl implements AdminMovieService {
         }
 
         MovieEntity savedMovie = movieRepository.save(movie);
-//        log.info("Saved complete movie: {}", savedMovie);
 
         List<MovieTrailersEntity> updatedTrailers = movieTrailersRepository.findByMovieMovieId(savedMovie.getMovieId());
         List<MoviePostersEntity> updatedPosters = moviePostersRepository.findByMovieMovieId(savedMovie.getMovieId());
 
-        return AdminMovieSecondInfoResponseDTO.fromEntity(savedMovie, updatedTrailers, updatedPosters);
+        return AdminMovieSecondInfoResponseDTO.fromEntity(savedMovie, updatedTrailers, updatedPosters, savedMovieFilm);
     }
 
     //배우 추가
@@ -435,11 +436,9 @@ public class AdminMovieServiceImpl implements AdminMovieService {
 
 
     // 영화의 두 번째 정보 페이지 데이터를 업데이트
-    @Transactional
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     @Override
     public AdminMovieSecondInfoResponseDTO updateMovieSecond(Long movieId, AdminMovieSecondInfoUpdateRequestDTO dto) {
-//        log.info("Updating movie with ID: {}", movieId);
-//        log.info("Update data: {}", dto);
         MovieEntity existingMovie = movieRepository.findById(movieId)
                 .orElseThrow(MovieNotFoundException::new);
 
@@ -447,102 +446,136 @@ public class AdminMovieServiceImpl implements AdminMovieService {
         movieRepository.updateMovieTitle(movieId, dto.getMovieTitle());
 
         // 영화 파일 정보 업데이트
-        updateMovieFilm(movieId, dto.getMovieFilm());
+        MovieFilmEntity updatedMovieFilm = updateMovieFilm(movieId, dto.getMovieFilm());
 
         // 트레일러 업데이트
-        updateTrailers(existingMovie, dto.getTrailer());
+        List<MovieTrailersEntity> updatedTrailers = updateTrailers(existingMovie, dto.getTrailer());
 
         // 포스터 업데이트
-        updatePosters(existingMovie, dto.getPoster());
+        List<MoviePostersEntity> updatedPosters = updatePosters(existingMovie, dto.getPoster());
 
         // 변경된 엔티티 다시 조회
         MovieEntity updatedMovie = movieRepository.findById(movieId)
                 .orElseThrow(MovieNotFoundException::new);
 
-        List<MovieTrailersEntity> trailers = movieTrailersRepository.findByMovieMovieId(movieId);
-        List<MoviePostersEntity> posters = moviePostersRepository.findByMovieMovieId(movieId);
-
-        return AdminMovieSecondInfoResponseDTO.fromEntity(updatedMovie, trailers, posters);
+        return AdminMovieSecondInfoResponseDTO.fromEntity(updatedMovie, updatedTrailers, updatedPosters, updatedMovieFilm);
     }
 
 
-    private void updateTrailers(MovieEntity movie, List<TrailerResponseDTO> trailerDTOs) {
-        if (trailerDTOs != null && !trailerDTOs.isEmpty()) {
-            movieTrailersRepository.deleteByMovie_MovieId(movie.getMovieId());
+    private MovieFilmEntity updateMovieFilm(Long movieId, FilmResponseDTO filmResponseDTO) {
+        Optional<MovieFilmEntity> existingFilm = movieFilmRepository.findByMovieMovieId(movieId);
 
-            boolean hasMainTrailer = false;
-            for (TrailerResponseDTO trailerDTO : trailerDTOs) {
-                if (trailerDTO.getTrailerUrls() != null && !trailerDTO.getTrailerUrls().trim().isEmpty()) {
-                    boolean isMainTrailer = trailerDTO.getMainTrailer() != null && trailerDTO.getMainTrailer() && !hasMainTrailer;
-                    if (isMainTrailer) {
-                        hasMainTrailer = true;
-                    }
-
-                    TrailersEntity newTrailer = TrailersEntity.builder()
-                            .trailerId(null)
-                            .trailerUrls(trailerDTO.getTrailerUrls())
-                            .mainTrailer(isMainTrailer)
-                            .build();
-                    TrailersEntity savedTrailer = trailersRepository.save(newTrailer);
-
-                    MovieTrailersEntity movieTrailer = new MovieTrailersEntity(savedTrailer, movie);
-                    movieTrailersRepository.save(movieTrailer);
-                }
-            }
-        }
-    }
-
-    private void updatePosters(MovieEntity movie, List<PosterResponseDTO> posterDTOs) {
-        if (posterDTOs != null && !posterDTOs.isEmpty()) {
-            moviePostersRepository.deleteByMovie_MovieId(movie.getMovieId());
-
-            boolean hasMainPoster = false;
-            for (PosterResponseDTO posterDTO : posterDTOs) {
-                if (posterDTO.getPosterUrls() != null && !posterDTO.getPosterUrls().trim().isEmpty()) {
-                    boolean isMainPoster = posterDTO.getMainPoster() != null && posterDTO.getMainPoster() && !hasMainPoster;
-                    if (isMainPoster) {
-                        hasMainPoster = true;
-                    }
-
-                    PostersEntity newPoster = PostersEntity.builder()
-                            .posterId(null)
-                            .posterUrls(posterDTO.getPosterUrls())
-                            .mainPoster(isMainPoster)
-                            .build();
-                    PostersEntity savedPoster = postersRepository.save(newPoster);
-
-                    MoviePostersEntity moviePoster = new MoviePostersEntity(savedPoster, movie);
-                    moviePostersRepository.save(moviePoster);
-                }
-            }
-        }
-    }
-
-    private void updateMovieFilm(Long movieId, FilmResponseDTO filmResponseDTO) {
-        if (filmResponseDTO != null) {
-            Optional<MovieFilmEntity> existingMovieFilm = movieFilmRepository.findByMovieMovieId(movieId);
-            if (existingMovieFilm.isPresent()) {
-                // 기존 엔티티가 있으면 업데이트
-                int updatedRows = movieFilmRepository.updateMovieFilm(movieId, filmResponseDTO.getMovieFilm());
-                if (updatedRows == 0) {
-                    throw new RuntimeException("Failed to update movie film");
-                }
+        if (filmResponseDTO != null && filmResponseDTO.getMovieFilm() != null && !filmResponseDTO.getMovieFilm().isEmpty()) {
+            if (existingFilm.isPresent()) {
+                // 기존 엔티티가 있으면 새로운 엔티티를 생성하여 URL만 업데이트
+                MovieFilmEntity updatedFilm = MovieFilmEntity.builder()
+                        .filmId(existingFilm.get().getFilmId())
+                        .movieFilm(filmResponseDTO.getMovieFilm())
+                        .movie(existingFilm.get().getMovie())
+                        .build();
+                return movieFilmRepository.save(updatedFilm);
             } else {
                 // 기존 엔티티가 없으면 새로 생성
-                int insertedRows = movieFilmRepository.insertMovieFilm(movieId, filmResponseDTO.getMovieFilm());
-                if (insertedRows == 0) {
-                    throw new RuntimeException("Failed to insert movie film");
+                MovieEntity movie = movieRepository.findById(movieId)
+                        .orElseThrow(MovieNotFoundException::new);
+                MovieFilmEntity newMovieFilm = MovieFilmEntity.builder()
+                        .movieFilm(filmResponseDTO.getMovieFilm())
+                        .movie(movie)
+                        .build();
+                return movieFilmRepository.save(newMovieFilm);
+            }
+        } else if (existingFilm.isPresent()) {
+            // 새로운 데이터가 없고 기존 데이터가 있으면 삭제
+            movieFilmRepository.delete(existingFilm.get());
+        }
+
+        return null;
+    }
+    private List<MovieTrailersEntity> updateTrailers(MovieEntity movie, List<TrailerResponseDTO> trailerDTOs) {
+        List<MovieTrailersEntity> existingTrailers = movieTrailersRepository.findByMovieMovieId(movie.getMovieId());
+
+        for (MovieTrailersEntity existingTrailer : existingTrailers) {
+            movieTrailersRepository.delete(existingTrailer);
+            trailersRepository.delete(existingTrailer.getTrailers());
+        }
+
+        entityManager.flush();
+        entityManager.clear();
+
+        List<MovieTrailersEntity> updatedTrailers = new ArrayList<>();
+        if (trailerDTOs != null && !trailerDTOs.isEmpty()) {
+            for (TrailerResponseDTO trailerDTO : trailerDTOs) {
+                if (trailerDTO.getTrailerUrls() != null && !trailerDTO.getTrailerUrls().trim().isEmpty()) {
+                    TrailersEntity newTrailer = TrailersEntity.builder()
+                            .trailerUrls(trailerDTO.getTrailerUrls())
+                            .mainTrailer(trailerDTO.getMainTrailer())
+                            .build();
+                    TrailersEntity savedTrailer = trailersRepository.save(newTrailer);
+                    MovieTrailersEntity movieTrailer = new MovieTrailersEntity(savedTrailer, movie);
+                    updatedTrailers.add(movieTrailersRepository.save(movieTrailer));
                 }
             }
         }
+        return updatedTrailers;
+    }
+    private List<MoviePostersEntity> updatePosters(MovieEntity movie, List<PosterResponseDTO> posterDTOs) {
+        List<MoviePostersEntity> existingPosters = moviePostersRepository.findByMovieMovieId(movie.getMovieId());
+
+        for (MoviePostersEntity existingPoster : existingPosters) {
+            moviePostersRepository.delete(existingPoster);
+            postersRepository.delete(existingPoster.getPosters());
+        }
+
+        entityManager.flush();
+        entityManager.clear();
+
+        List<MoviePostersEntity> updatedPosters = new ArrayList<>();
+        if (posterDTOs != null && !posterDTOs.isEmpty()) {
+            for (PosterResponseDTO posterDTO : posterDTOs) {
+                if (posterDTO.getPosterUrls() != null && !posterDTO.getPosterUrls().trim().isEmpty()) {
+                    PostersEntity newPoster = PostersEntity.builder()
+                            .posterUrls(posterDTO.getPosterUrls())
+                            .mainPoster(posterDTO.getMainPoster())
+                            .build();
+                    PostersEntity savedPoster = postersRepository.save(newPoster);
+                    MoviePostersEntity moviePoster = new MoviePostersEntity(savedPoster, movie);
+                    updatedPosters.add(moviePostersRepository.save(moviePoster));
+                }
+            }
+        }
+        return updatedPosters;
     }
 
     //삭제
     @Override
     @Transactional
-    public void deleteMovies(List<Long> movieIds) {
+    public void deleteMovies(List<Long> movieIds, List<Long> posterIds, List<Long> trailerIds,List<Long> reviewIds) {
         for (Long movieId : movieIds) {
+            // 연관된 엔티티들을 먼저 삭제
+            movieTrailersRepository.deleteByMovie_MovieId(movieId);
+            moviePostersRepository.deleteByMovie_MovieId(movieId);
+            movieGenresRepository.deleteByMovieId(movieId);
+            movieActorsRepository.deleteByMovieId(movieId);
+            movieDirectorsRepository.deleteByMovieId(movieId);
+            movieWatchHistoryRepository.deleteByMovieMovieId(movieId);
+            movieFavorRepository.deleteByMovieMovieId(movieId);
+            // 마지막으로 영화 자체를 삭제
             movieRepository.deleteById(movieId);
+        }
+
+        for (Long trailerId : trailerIds) {
+            trailersRepository.deleteByTrailerId(trailerId);
+        }
+
+        for (Long posterId: posterIds) {
+            postersRepository.deleteByPosterId(posterId);
+        }
+
+        for (Long reviewId : reviewIds) {
+            reviewLikesRepository.deleteByReviewReviewId(reviewId);
+            attractionPointsRepository.deleteByReviewId(reviewId);
+            emotionPointsRepository.deleteByReviewId(reviewId);
+            movieReviewRepository.deleteById(reviewId);
         }
     }
 }

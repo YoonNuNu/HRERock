@@ -110,4 +110,9 @@ public class MyPageService {
 
         movieReviewRepository.delete(review);
     }
+
+    // 시청 기록 삭제 로직
+    public void deleteWatchHistory(Long watchId,Long memNum){
+        movieWatchHistoryRepository.deleteByMemberMemNumAndWatchId(memNum, watchId);
+    }
 }

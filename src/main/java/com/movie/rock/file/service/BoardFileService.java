@@ -7,6 +7,7 @@ import com.movie.rock.file.data.BoardFileDownloadResponseDTO;
 import com.movie.rock.file.data.BoardFileUploadResponseDTO;
 import com.movie.rock.file.data.BoardFileEntity;
 import com.movie.rock.file.data.BoardFileRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -31,21 +33,21 @@ public class BoardFileService {
 
     public final BoardRepository boardRepository;
     public final BoardFileRepository boardFileRepository;
-    
+
     //폴더경로
     @Value("${project.folderPath}")
     public String FOLDER_PATH;
-    
+
     //업로드 메서드
     public List<BoardFileUploadResponseDTO> boardFileUpload(Long boardId, List<MultipartFile> multipartFiles) throws IOException {
         //게시글 찾기(boardId)
         BoardEntity boardEntity = boardRepository.findById(boardId).orElseThrow(
                 () -> new ResourceNotFoundException("Board","Board id",String.valueOf(boardId))
         );
-        
+
         //파일들 list로 생성
         List<BoardFileEntity> boardFileEntities = new ArrayList<>();
-        
+
         //가지고온 file들이 없을떄 까지 돌림
         for(MultipartFile multipartFile : multipartFiles) {
             //이름가져오기(오리지넣)
@@ -78,7 +80,7 @@ public class BoardFileService {
                     .build();
 
             saveFile.setMappingBoard(boardEntity);
-            
+
             //db에저장
             boardFileEntities.add(boardFileRepository.save(saveFile));
         }
@@ -127,6 +129,40 @@ public class BoardFileService {
         }
         //db에서 삭제
         boardFileRepository.delete(boardFileEntity);
+    }
+
+    // 파일 수정 메서드 추가
+    public BoardFileEntity updateFile(Long fileId, MultipartFile newFile) throws IOException {
+        BoardFileEntity existingFile = boardFileRepository.findById(fileId)
+                .orElseThrow(() -> new ResourceNotFoundException("BoardFile", "BoardFile id", String.valueOf(fileId)));
+
+        // 기존 파일 삭제
+        String oldFilePath = FOLDER_PATH + File.separator + existingFile.getBoardFilePath();
+        Files.deleteIfExists(Paths.get(oldFilePath));
+
+        // 새 파일 저장
+        String boardFileName = newFile.getOriginalFilename();
+        String randomId = UUID.randomUUID().toString();
+        String repositoryBoardFile = "POST_" + existingFile.getBoard().getBoardId() + "_" +
+                randomId + boardFileName.substring(boardFileName.lastIndexOf("."));
+
+        String newFilePath = FOLDER_PATH + File.separator + repositoryBoardFile;
+
+        // 폴더가 없으면 생성
+        File bf = new File(FOLDER_PATH);
+        if (!bf.exists()) {
+            bf.mkdirs();
+        }
+
+        // 새 파일 저장
+        Files.copy(newFile.getInputStream(), Paths.get(newFilePath), StandardCopyOption.REPLACE_EXISTING);
+
+        // 엔티티 업데이트
+        existingFile.setBoardOriginFileName(boardFileName);
+        existingFile.setBoardFilePath(repositoryBoardFile);
+        existingFile.setBoardFileType(newFile.getContentType());
+
+        return boardFileRepository.save(existingFile);
     }
 
     //타입 설정 메서드

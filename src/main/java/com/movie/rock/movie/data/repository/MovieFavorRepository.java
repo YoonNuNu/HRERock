@@ -44,4 +44,7 @@ public interface MovieFavorRepository extends JpaRepository<MovieFavorEntity, Mo
             "AND (p.posters.mainPoster = true OR p.posters IS NULL OR NOT EXISTS(SELECT 1 FROM MoviePostersEntity mp WHERE mp.movie = m AND mp.posters.mainPoster = true)) " +
             "ORDER BY m.createDate DESC")
     Page<MyPageFavorResponseDTO> findFavoriteMoviesWithMainPoster(@Param("memNum") Long memNum, Pageable pageable);
+
+    //영화 관리페이지 영화 삭제
+    void deleteByMovieMovieId(Long movieId);
 }

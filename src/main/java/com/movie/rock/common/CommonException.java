@@ -55,7 +55,7 @@ public class CommonException extends RuntimeException {
     }
 
     public static class DuplicateDirectorException extends CommonException {
-        public DuplicateDirectorException() { super("동일한 배우가 있습니다.", "ERR_DUPLICATE_DIRECTOR", HttpStatus.BAD_REQUEST); }
+        public DuplicateDirectorException() { super("동일한 감독이 있습니다.", "ERR_DUPLICATE_DIRECTOR", HttpStatus.BAD_REQUEST); }
     }
 
     public static class InvalidActorPhotoTypeException extends CommonException {

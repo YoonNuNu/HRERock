@@ -1,6 +1,7 @@
 package com.movie.rock.pythonData.data;
 
 import com.movie.rock.movie.data.entity.MovieEntity;
+import com.movie.rock.movie.data.response.MovieDetailResponseDTO;
 import com.movie.rock.movie.data.response.MovieInfoResponseDTO;
 import com.movie.rock.movie.data.response.MovieInfoResponseDTO.PosterResponseDTO;
 import lombok.Builder;
@@ -13,12 +14,14 @@ public class PythonResponseDTO {
     private Long movieId;
     private String movieTitle;
     private PosterResponseDTO mainPosterUrl;
+    private String movieDescription;
 
     @Builder
-    public PythonResponseDTO(Long movieId, String movieTitle, PosterResponseDTO mainPosterUrl) {
+    public PythonResponseDTO(Long movieId, String movieTitle, PosterResponseDTO mainPosterUrl, String movieDescription) {
         this.movieId = movieId;
         this.movieTitle = movieTitle;
         this.mainPosterUrl = mainPosterUrl;
+        this.movieDescription = movieDescription;
     }
 
     public static PythonResponseDTO fromEntity(MovieEntity movie) {
@@ -36,6 +39,7 @@ public class PythonResponseDTO {
                             return p2.getMainPoster().compareTo(p1.getMainPoster());
                         }).findFirst()
                         .orElse(null))
+                .movieDescription(movie.getMovieDescription())
                 .build();
     }
 }

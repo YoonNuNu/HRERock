@@ -28,7 +28,6 @@ import java.util.List;
 public class MovieReviewController {
 
     private final MovieReviewService movieReviewService;
-    private final MovieReviewEmotionPointsRepository movieReviewEmotionPointsRepository;
 
     private Long getMemNumFromAuthentication(Authentication authentication) {
         if (authentication.getPrincipal() instanceof UserDetails) {

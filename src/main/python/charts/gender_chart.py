@@ -15,16 +15,19 @@ def plot_gender_pie_charts(gender_df, movie_id):
     fig, ax = plt.subplots(figsize=(8, 8))
 
     # 파이 차트 그리기
-    ax.pie(
+    wedges, texts, autotexts = ax.pie(
         gender_counts,
         labels=gender_counts.index,
         autopct='%1.1f%%',
-        startangle=00,
-        colors=['#ff9999', '#66b3ff']
+        startangle=90,
+        colors=['#64C7EE', '#E78BB5']
     )
-    ax.set_title('성별 분포')
+
+    # 글자 크기 설정
+    plt.setp(texts, size=24, weight='bold')
+    plt.setp(autotexts, size=24, weight='bold')
+
     ax.axis('equal')
-    # plt.show()
 
     # 파일 경로 설정
     file_path = os.path.join('src', 'main', 'resources', 'static', 'images', f'gender_chart_{movie_id}.png')
@@ -33,5 +36,4 @@ def plot_gender_pie_charts(gender_df, movie_id):
     # 파일로 저장
     fig.savefig(file_path)
 
-    # 기존 파일 덮어쓰기
     plt.close()

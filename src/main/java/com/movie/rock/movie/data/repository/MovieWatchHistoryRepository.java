@@ -23,32 +23,38 @@ public interface MovieWatchHistoryRepository extends JpaRepository<MovieWatchHis
 //    List<MovieWatchHistoryEntity> findUnfinishedByMemNumOrderByDateDesc(@Param("memNum") Long memNum);
 
     @Query("SELECT DISTINCT mwh FROM MovieWatchHistoryEntity mwh " +
-                "JOIN FETCH mwh.movie m " +
-           "LEFT JOIN FETCH m.poster p " +
-                     "WHERE mwh.member.memNum = :memNum AND mwh.watchTime < mwh.totalDuration " +
-                                                       "AND (p IS NULL OR p.posters.mainPoster = true) " +
-                  "ORDER BY mwh.watchDate DESC")
+            "JOIN FETCH mwh.movie m " +
+            "LEFT JOIN FETCH m.poster p " +
+            "WHERE mwh.member.memNum = :memNum AND mwh.watchTime < mwh.totalDuration " +
+            "AND (p IS NULL OR p.posters.mainPoster = true) " +
+            "ORDER BY mwh.watchDate DESC")
     List<MovieWatchHistoryEntity> findUnfinishedByMemNumOrderByDateDesc(@Param("memNum") Long memNum, Pageable pageable);
 
     //전체 시청기록
     @Query("SELECT DISTINCT mwh FROM MovieWatchHistoryEntity mwh " +
-                "JOIN FETCH mwh.movie m " +
-           "LEFT JOIN FETCH m.poster p " +
-                     "WHERE mwh.member.memNum = :memNum AND (p IS NULL OR p.posters.mainPoster = true) " +
-                  "ORDER BY mwh.watchDate DESC")
+            "JOIN FETCH mwh.movie m " +
+            "LEFT JOIN FETCH m.poster p " +
+            "WHERE mwh.member.memNum = :memNum AND (p IS NULL OR p.posters.mainPoster = true) " +
+            "ORDER BY mwh.watchDate DESC")
     List<MovieWatchHistoryEntity> findAllByMemNumOrderByDateDesc(@Param("memNum") Long memNum, Pageable pageable);
 
     //영화별 시청 기록
     @Query("SELECT mwh FROM MovieWatchHistoryEntity mwh " +
             "WHERE mwh.member.memNum = :memNum AND mwh.movie.movieId = :movieId " +
-         "ORDER BY mwh.watchDate DESC")
+            "ORDER BY mwh.watchDate DESC")
     Optional<MovieWatchHistoryEntity> findLatestByMemNumAndMovieId(@Param("memNum") Long memNum, @Param("movieId") Long movieId);
 
     // 마이페이지 전체 시청기록 (Page 반환)
     @Query("SELECT DISTINCT mwh FROM MovieWatchHistoryEntity mwh " +
-                "JOIN FETCH mwh.movie m " +
-           "LEFT JOIN FETCH m.poster p " +
-                     "WHERE mwh.member.memNum = :memNum AND (p IS NULL OR p.posters.mainPoster = true) " +
-                  "ORDER BY mwh.watchDate DESC")
+            "JOIN FETCH mwh.movie m " +
+            "LEFT JOIN FETCH m.poster p " +
+            "WHERE mwh.member.memNum = :memNum AND (p IS NULL OR p.posters.mainPoster = true) " +
+            "ORDER BY mwh.watchDate DESC")
     Page<MovieWatchHistoryEntity> findAllByMemNumOrderByDateDescPaged(@Param("memNum") Long memNum, Pageable pageable);
+
+    void deleteByMemberMemNumAndWatchId(Long memNum, Long watchId); //마이페이지
+
+    void deleteByMovieMovieId(Long movieId);    //영화 관리페이지 삭제
+
+    List<MovieWatchHistoryEntity> findByMovieMovieId(Long movieId);
 }

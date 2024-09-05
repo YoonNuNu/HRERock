@@ -19,4 +19,6 @@ public interface MovieReviewEmotionPointsRepository extends JpaRepository<MovieR
 //    MovieReviewEmotionPointsRatioResponseDTO getEmotionPointRatios(Long movieId);
 
     Optional<MovieReviewEmotionPointsEntity> findByReviewId(Long reviewId);
+
+    void deleteByReviewId(Long reviewId);
 }

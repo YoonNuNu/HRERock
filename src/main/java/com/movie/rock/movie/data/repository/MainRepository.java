@@ -27,6 +27,24 @@ public interface MainRepository extends JpaRepository<MovieEntity, Long> {
                                                                                     "WHERE mp.movie = m AND mp.posters.mainPoster = true))" +
          "ORDER BY m.createDate DESC")
     List<MainResponseDTO> findRecentMoviesWithin30days(@Param("thirtyDaysAgo") String thirtyDaysAgo);
+//    @Query("SELECT new com.movie.rock.movie.data.response.MainResponseDTO(m.movieId, m.movieTitle, m.movieDescription, " +
+//            "p.posters.posterId, p.posters.posterUrls, p.posters.mainPoster, " +
+//            "CASE WHEN EXISTS (SELECT 1 FROM m.trailer t WHERE t.trailers.mainTrailer = true) " +
+//            "     THEN (SELECT t.trailers.trailerId FROM m.trailer t WHERE t.trailers.mainTrailer = true) " +
+//            "     ELSE (SELECT MIN(t.trailers.trailerId) FROM m.trailer t) END, " +
+//            "CASE WHEN EXISTS (SELECT 1 FROM m.trailer t WHERE t.trailers.mainTrailer = true) " +
+//            "     THEN (SELECT t.trailers.trailerUrls FROM m.trailer t WHERE t.trailers.mainTrailer = true) " +
+//            "     ELSE (SELECT t.trailers.trailerUrls FROM m.trailer t WHERE t.trailers.trailerId = (SELECT MIN(t2.trailers.trailerId) FROM m.trailer t2)) END, " +
+//            "true, " +
+//            "m.createDate, COALESCE(AVG(r.reviewRating), 0.0)) " +
+//            "FROM MovieEntity m " +
+//            "LEFT JOIN m.poster p " +
+//            "LEFT JOIN m.reviews r " +
+//            "WHERE m.createDate > :thirtyDaysAgo " +
+//            "AND (p.posters.mainPoster = true OR p.posters IS NULL) " +
+//            "GROUP BY m.movieId, m.movieTitle, m.movieDescription, p.posters.posterId, p.posters.posterUrls, p.posters.mainPoster, m.createDate " +
+//            "ORDER BY m.createDate DESC")
+//    List<MainResponseDTO> findRecentMoviesWithin30days(@Param("thirtyDaysAgo") String thirtyDaysAgo);
 
     //30일 내에 추가된 영화 없을 시, movieId 상위 5개
     @Query("SELECT new com.movie.rock.movie.data.response.MainResponseDTO(m.movieId, m.movieTitle, m.movieDescription, " +

@@ -22,5 +22,7 @@ public class MemberInfoDTO {
 
     private RoleEnum memRole;
 
+    private String memProfile;
+
     private Long memNum;
 }

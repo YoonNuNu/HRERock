@@ -1,6 +1,7 @@
 package com.movie.rock.file.controller;
 
 import com.movie.rock.file.data.BoardFileDownloadResponseDTO;
+import com.movie.rock.file.data.BoardFileEntity;
 import com.movie.rock.file.data.BoardFileUploadResponseDTO;
 import com.movie.rock.file.service.BoardFileService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardFileController {
     private final BoardFileService boardFileService;
-    
+
     //업로드
     @PostMapping("/admin/boardUpload/{boardId}")
     public ResponseEntity<List<BoardFileUploadResponseDTO>> boardUpload(
@@ -41,6 +42,17 @@ public class BoardFileController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; fileName=\"" + downFile.getBoardFileName() + "\"")
                 .body(new ByteArrayResource(downFile.getContext()));
 
+    }
+
+    @PutMapping("/admin/boardFileUpdate/{fileId}")
+    public ResponseEntity<?> updateBoardFile(@PathVariable("fileId") Long fileId, @RequestParam(name="file") MultipartFile file) {
+        try {
+            BoardFileEntity updatedFile = boardFileService.updateFile(fileId, file);
+            BoardFileUploadResponseDTO responseDTO = BoardFileUploadResponseDTO.fromEntity(updatedFile);
+            return ResponseEntity.ok(responseDTO);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 수정 중 오류 발생");
+        }
     }
 
     //삭제

@@ -42,6 +42,21 @@ public class MainServiceImpl implements MainService {
         return updatedMoviesWithTrailers;
     }
 
+//@Override
+//public List<MainResponseDTO> getUpdatedMoviesWithTrailers() {
+//    LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
+//    String thirtyDaysAgoString = thirtyDaysAgo.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+//
+//    List<MainResponseDTO> updatedMoviesWithTrailers = mainRepository.findRecentMoviesWithin30days(thirtyDaysAgoString);
+//
+//    if (updatedMoviesWithTrailers.isEmpty()) {
+//        Pageable pageable = PageRequest.of(0, TOP_TEN);
+//        updatedMoviesWithTrailers = mainRepository.findTop10ByOrderByMovieIdDesc(pageable);
+//    }
+//
+//    return updatedMoviesWithTrailers;
+//}
+
     @Override
     public List<MainResponseDTO> getUpdatedMovies() {
         LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);

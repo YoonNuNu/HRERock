@@ -13,6 +13,7 @@ import java.util.Optional;
 
 @Repository
 public interface MovieRepository extends JpaRepository<MovieEntity, Long> {
+
     @Query("SELECT m " +
              "FROM MovieEntity m " +
             "WHERE m.movieId = :movieId")

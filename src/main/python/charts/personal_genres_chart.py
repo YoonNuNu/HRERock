@@ -3,42 +3,65 @@ import numpy as np
 from PIL import Image
 from wordcloud import WordCloud
 import os
+import logging
+import sys
+import traceback
+import pandas as pd
 
+# logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+# logger = logging.getLogger(__name__)
 
 def plot_personal_genres_wordcloud(personal_genres_df, mem_num):
+#     try:
+#         # logger.info(f"Starting to plot wordcloud for member {mem_num}")
+#         # logger.info(f"Current working directory: {os.getcwd()}")
+#
+#         if personal_genres_df.empty:
+#             # logger.warning(f"No genre data for member {mem_num}")
+#             return
+#
+#         genre_counts = personal_genres_df['genre_name'].value_counts()
+#         # logger.info(f"Genre counts:\n{genre_counts.to_string()}")
+#
+#         # 워드클라우드 생성 및 저장
+#         font_path = 'C:/Windows/Fonts/malgun.ttf'
+#         masking_image_path = os.path.join('src', 'main', 'resources', 'static', 'wordcloud', 'film.png')
+#
+#         mask_image = Image.open(masking_image_path).convert('L')
+#         mask = np.array(mask_image)
+#
+#         wc = WordCloud(width=800, height=800, font_path=font_path, mask=mask,
+#                        max_words=20, background_color=None, mode='RGBA', colormap='Set2')
+#         wc.generate_from_frequencies(genre_counts)
+#
+#         file_path = os.path.join('src', 'main', 'resources', 'static', 'images', f'personal_genres_{mem_num}.png')
+#         wc.to_file(file_path)
+#         # logger.info(f"Wordcloud saved at: {file_path}")
+#
+#         # if os.path.exists(file_path):
+#         #     file_size = os.path.getsize(file_path)
+#             # logger.info(f"File created successfully. Size: {file_size} bytes")
+#         # else:
+#         #     logger.error(f"Failed to create file at {file_path}")
+#
+#     except Exception as e:
+#         logger.error(f"Error in plot_personal_genres_wordcloud: {str(e)}")
+#         # logger.error(traceback.format_exc())
+#
+# # logger.info("plot_personal_genres_wordcloud function defined successfully")
+
     genre_counts = personal_genres_df['genre_name'].value_counts()
 
-    # 한글 폰트 설정 (Windows 예시)
-    font_path = 'C:/Windows/Fonts/malgun.ttf'  # 맑은 고딕 폰트 경로
-    if not os.path.exists(font_path):  # 폰트 경로가 존재하는지 확인
-        raise FileNotFoundError(f"Font not found: {font_path}")
+    # 워드클라우드 생성 및 저장
+    font_path = 'C:/Windows/Fonts/malgun.ttf'
+    masking_image_path = os.path.join('src', 'main', 'resources', 'static', 'wordcloud', 'film.png')
 
-    # wordcloud 생성 이미지
-    masking_image = np.array(Image.open(os.path.join(".", "src", "main", "resources", "static", "wordcloud", "film.png")))
+    mask_image = Image.open(masking_image_path).convert('L')
+    mask = np.array(mask_image)
 
-    # base_path = os.path.join(".", "src", "main", "resources", "static", "wordcloud")
-    # file_path = os.path.join(base_path, "film.png")
-    # masking_image = np.array(Image.open(file_path))
+    wc = WordCloud(width=800, height=800, font_path=font_path, mask=mask,
+                   max_words=20, background_color=None, mode='RGBA', colormap='Set2')
+    wc.generate_from_frequencies(genre_counts)
 
-    # wordcloud 생성
-    wordcloud = WordCloud(width=800,
-                          height=400,
-                          font_path=font_path,
-                          mask = masking_image,
-                          background_color='white').generate_from_frequencies(genre_counts)
-
-    # 그림객체 생성
-    fig, ax = plt.subplots(figsize=(8, 8))
-
-    ax.imshow(wordcloud, interpolation='bilinear')
-    ax.axis('off')
-
-    # 파일 경로 설정
     file_path = os.path.join('src', 'main', 'resources', 'static', 'images', f'personal_genres_{mem_num}.png')
-    os.makedirs(os.path.dirname(file_path), exist_ok=True)
-
-    # 파일로 저장
-    fig.savefig(file_path)
-
-    # 기존 파일 덮어쓰기
-    plt.close()
+    wc.to_file(file_path)

@@ -17,4 +17,6 @@ public interface MovieReviewAttractionPointsRepository extends JpaRepository<Mov
 //    MovieReviewAttractionPointsRatioResponseDTO getAttractionPointRatios(Long movieId);
 
     Optional<MovieReviewAttractionPointsEntity> findByReviewId(Long reviewId);
+
+    void deleteByReviewId(Long reviewId);
 }

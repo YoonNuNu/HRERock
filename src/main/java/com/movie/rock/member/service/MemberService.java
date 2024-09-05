@@ -39,7 +39,7 @@ public class MemberService {
     private EmailVerificationService emailVerificationService;
 
     // 회원 가입 ------------------------------------------------------------------
-    
+
     // 회원가입 이메일 인증 발송
     public void sendSignUpVerificationEmail(String memEmail) throws Exception {
         if (memberRepository.findByMemEmail(memEmail).isPresent()) {
@@ -76,13 +76,14 @@ public class MemberService {
                 .memGender(signupRequestDTO.getMemGender())
                 .memBirth(signupRequestDTO.getMemBirth())
                 .memRole(RoleEnum.USER)
+                .memProfile("/static/media/Profile_1.e607f6bcdd36d2f31fae912e7a1cb894.svg")
                 .build();
 
         memberRepository.save(newMember);
     }
 
     // 중복 체크 ------------------------------------------------------------------
-    
+
     // 아이디 중복 확인
     public boolean isUsernameExists(String memId) {
         return memberRepository.findByMemId(memId).isPresent();
@@ -94,7 +95,7 @@ public class MemberService {
     }
 
     // 회원 탈퇴 ------------------------------------------------------------------
-    
+
     // 회원탈퇴
     @Transactional
     public void delete(String memId) throws Exception {
@@ -120,7 +121,7 @@ public class MemberService {
     }
 
     // 정보 수정 ------------------------------------------------------------------
-    
+
     // 회원 정보 수정
     @Transactional
     public void updateMember(String memId, UpdateMemberDTO updateDto) {
@@ -143,6 +144,11 @@ public class MemberService {
         // 전화번호 변경
         if (updateDto.getMemNewTel() != null && !updateDto.getMemNewTel().isEmpty()) {
             member.updateTel(updateDto.getMemNewTel());
+        }
+
+        // 프로필 사진 변경
+        if (updateDto.getMemNewProfile() != null && !updateDto.getMemNewProfile().isEmpty()) {
+            member.updateProfile(updateDto.getMemNewProfile());
         }
 
         memberRepository.save(member);

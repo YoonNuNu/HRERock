@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 import matplotlib.font_manager as fm
+import seaborn as sns
 
 # 한글 폰트 설정
 font_path = 'C:/Windows/Fonts/malgun.ttf'  # 맑은 고딕 폰트 경로
@@ -38,6 +39,9 @@ def plot_emotion_radar_chart(emotion_points_df, movie_id):
     categories = list(emotion_ratios.keys())
     values = list(emotion_ratios.values())
 
+    # 색상파렛트
+    colors = sns.color_palette("husl", n_colors=len(categories))
+
     # 각도 계산 (5각형을 위해 5개의 각도)
     angles = np.linspace(0, 2*np.pi, len(categories), endpoint=False).tolist()
 
@@ -52,32 +56,30 @@ def plot_emotion_radar_chart(emotion_points_df, movie_id):
     ax.set_theta_offset(np.pi / 2)
     ax.set_theta_direction(-1)  # 시계 방향으로 설정
 
-    # 5각형 배경 그리기
+    # 배경 그리기
     for i in range(6):
         scaled_bg_values = [0.2 * i] * (len(categories) + 1)
-        ax.plot(angles, scaled_bg_values, 'gray', linewidth=0.5)
-
-    # 외부 원 제거
-    ax.spines['polar'].set_visible(False)
+        ax.plot(angles, scaled_bg_values, 'gray', linewidth=0.5, alpha=0.7)
 
     # 데이터 플롯
-    ax.plot(angles, values, 'o-', linewidth=2, color='skyblue')
-    ax.fill(angles, values, alpha=0.25, color='skyblue')
+    ax.plot(angles, values, 'o-', linewidth=3, color='#1351F9')
+    ax.fill(angles, values, color='#1351F933')
 
-    # 기본 그리드 제거
-    ax.grid(False)
+    # 각 점에 다른 색상 적용
+    for angle, value, color in zip(angles[:-1], values[:-1], colors):
+        ax.plot(angle, value, 'o', color=color, markersize=10)
 
-    # 카테고리 레이블 추가
-    ax.set_xticks(angles[:-1])
-    ax.set_xticklabels(categories)
-
-    # y축 범위 설정 (0부터 1까지)
-    ax.set_ylim(0, 1)
+    ax.set_xticks([])
+    ax.set_ylim(0, 1.3)
     ax.set_yticks([])
 
-    # 방사형 축 그리기
-    for angle in angles[:-1]:
-        ax.plot([angle, angle], [0, 1], 'gray', linewidth=0.5)
+    # 레이블 색상 변경
+    for label, angle in zip(categories, angles[:-1]):
+        ha = 'right' if angle < np.pi else 'left'
+        ax.text(angle, 1.2, label, va='center', ha='center', size=24, weight='bold')
+
+    ax.spines['polar'].set_visible(False)
+    ax.grid(False)
 
     plt.tight_layout()
 
@@ -88,8 +90,4 @@ def plot_emotion_radar_chart(emotion_points_df, movie_id):
     # 파일로 저장
     fig.savefig(file_path)
 
-     # 기존 파일 덮어쓰기
     plt.close()
-
-
-    # plt.show()

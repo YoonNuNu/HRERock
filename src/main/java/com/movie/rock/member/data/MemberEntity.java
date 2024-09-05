@@ -52,6 +52,9 @@ public class MemberEntity {
     @Column(name = "mem_name", nullable = false)
     private String memName;
 
+    @Column(name = "mem_profile", nullable = false)
+    private String memProfile;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "mem_role", nullable = false)
     private RoleEnum memRole;
@@ -81,9 +84,21 @@ public class MemberEntity {
 
 
     @Builder
-    public MemberEntity(String memId, String memPassword, String memEmail, String memTel, String memGender, LocalDate memBirth, String memName, RoleEnum memRole
-            ,List<MessageEntity> message,List<ChatRoomEntity> member,List<SessionEntity> session,List<MovieFavorEntity> favorites,
-                        List<MovieReviewEntity> reviews,List<MovieWatchHistoryEntity> movieWatch) {
+    public MemberEntity(String memId,
+                        String memPassword,
+                        String memEmail,
+                        String memTel,
+                        String memGender,
+                        LocalDate memBirth,
+                        String memName,
+                        RoleEnum memRole,
+                        String memProfile,
+                        List<MessageEntity> message,
+                        List<ChatRoomEntity> member,
+                        List<SessionEntity> session,
+                        List<MovieFavorEntity> favorites,
+                        List<MovieReviewEntity> reviews,
+                        List<MovieWatchHistoryEntity> movieWatch) {
         this.memId = memId;
         this.memPassword = memPassword;
         this.memEmail = memEmail;
@@ -98,6 +113,7 @@ public class MemberEntity {
         this.favorites = favorites;
         this.reviews = reviews;
         this.movieWatch = movieWatch;
+        this.memProfile = memProfile;
     }
 
     // 비밀번호 변경을 위한 메서드
@@ -113,6 +129,11 @@ public class MemberEntity {
     // 전화번호 변경을 위한 메서드
     public void updateTel(String newTel) {
         this.memTel = newTel;
+    }
+
+    // 프로필 사진 변경을 위한 메서드
+    public void updateProfile(String newProfile) {
+        this.memProfile = newProfile;
     }
 
 }

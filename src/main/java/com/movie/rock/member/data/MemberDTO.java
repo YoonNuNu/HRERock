@@ -19,6 +19,7 @@ public class MemberDTO {
     private LocalDate memBirth;
     private String memName;
     private RoleEnum memRole;
+    private String memProfile;
 
     public MemberEntity toEntity(String encodedPassword) {
         return MemberEntity.builder()
@@ -30,6 +31,7 @@ public class MemberDTO {
                 .memBirth(memBirth)
                 .memName(memName)
                 .memRole(RoleEnum.USER)
+                .memProfile(memProfile)
                 .build();
     }
 

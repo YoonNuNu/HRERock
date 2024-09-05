@@ -1,0 +1,257 @@
+
+.UploadBody{
+    /* width: 80%; */
+    height: 100%;
+    font-size: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.AdminUploadHead{
+    text-align: center;
+    font-size: 2rem;
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+}
+
+.UploadInfo{
+    width: 100%;
+    /* border: 1px solid red; */
+
+}
+
+.UploadInfoForm{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.UploadInfoForm > label{
+    width: 80%;
+    display: flex;
+    margin-top: 20px;
+    /* margin-bottom: 10px; */
+    /* border: 1px solid red; */
+
+}
+
+.UploadInfoForm > label > div:first-child{
+    width: 30%;
+    text-align: right;
+    margin-right: 10px;
+    /* display: flex; */
+    /* align-items: right; */
+}
+.UploadInfoForm > label > div:last-child{
+    width: 60%;
+    text-align: right;
+    display: flex;
+    align-items: center;
+    /* border: 1px solid blue; */
+}
+
+/* 새 영화 제목 업로드 */
+.UploadTitleForm{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    /* border: 1px solid blue; */
+}
+
+/* 새 영화 제목 업로드 label */
+.UploadTitleForm > label{
+    width: 80%;
+    display: flex;
+    margin-top: 20px;
+    /* border: 1px solid red; */
+
+}
+
+
+.UploadTitleForm > label > div:first-child{
+    width: 30%;
+    text-align: right;
+    /* display: flex; */
+    /* align-items: right; */
+}
+
+
+.UploadTitleForm > label > div:last-child{
+    width: 60%;
+    text-align: right;
+    display: flex;
+    align-items: center;
+    /* border: 1px solid blue; */
+}
+
+
+/* 새 영화 업로드 제목 */
+.admimMovieUploadTitle{
+    width: 80%;
+
+    display: flex;;
+    align-items: flex-end;
+}
+.admimMovieUploadTitle > label{
+    width: 30%;
+
+    text-align: right;
+    /* display: flex; */
+    /* align-items: right; */
+
+}
+
+
+/* 새 영화 업로드 제목 버튼 */
+.MovietitleSubmit{
+    width: 140px;
+    height: 30px;
+    margin-left: 10px;
+    color: black;
+    border: 1px solid black;
+}
+
+.MovieTitleInput{
+    margin-left: 10px;
+    width: 30%;
+    height: 30px;
+    border: none;
+    border: 1px solid rgba(201, 201, 201, 0.6);
+}
+.UploadInfoForm > label > div:last-child > input{
+    width: 30%;
+    height: 30px;
+    border: none;
+    border: 1px solid rgba(201, 201, 201, 0.6);
+}
+.UploadInfoForm > div{
+    width: 100%;
+    text-align: center;
+    /* border: 1px solid red; */
+}
+.MovieUploadBtn{
+    /* text-align: center; */
+    width: 200px;
+    height: 50px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 1px solid rgba(201, 201, 201, 0.6);
+}
+
+.MovieUploadDiv{
+    width: 700px;
+    /* border: 1px solid red; */
+    display: flex;
+}
+
+.UploadMovieFileLabel{
+    width: 1045px;
+    display: flex;
+    margin-bottom: 15px;
+    justify-content: right;
+    /* border: 1px solid blue; */
+}
+
+.MovieUploadInput{
+    width: 300px;
+    border: 1px solid rgba(201, 201, 201, 0.6);
+}
+
+.UploadCheckBoxLabel{
+    width: 300px;
+    /* border: 1px solid gray; */
+    display: flex;
+}
+
+
+/* 영화 수정 - 기본 정보 input*/
+.movieModifyUploadInfoForm{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    /* border: 1px solid blue; */
+}
+
+.movieModifyUploadInfoForm > div{
+    width: 100%;
+
+}
+
+.movieModifyUploadInfoForm > label{
+    width: 100%;
+    margin-bottom: 10px;
+    display: flex;
+    /* border: 1px solid green; */
+}
+
+/* input 설명 */
+.movieModifyUploadInfoForm > label > div:first-child{
+    width: 700px;
+    /* border: 1px solid red; */
+    text-align: right;
+    margin-right: 10px;
+}
+
+.movieModifyUploadInfoForm > label > .input-container{
+    position: relative;
+    margin-right: 10px;
+}
+.input-container{
+    position: relative;
+    display: flex;
+}
+
+.input-container > button{
+    width: 100px;
+}
+.NewMovieUploadTitle > div:first-child{
+    margin-right: 10px;
+}
+
+/* 관리자 영화 파일 수정 페이지*/
+
+.ModifyMovieFile{
+    /* border: 2px solid blue; */
+
+}
+
+
+.ModifyMovieFile > label{
+    display: flex;
+    /* border: 1px solid blue; */
+    width: 48%;
+}
+
+.ModifyMovieFile > div:first-child{
+    margin-right: 10px;
+}
+
+.ModifyMovieFileLabel{
+    width: 992px;
+    display: flex;
+    margin-bottom: 15px;
+    justify-content: right;
+}
+.ModifyMovieFile > .ModifyMovieFileLabel > div{
+    text-align: right !important;
+}
+.modifyMovieInput{
+    width: 250px;
+    margin-left: 10px;
+    border: 1px solid rgba(201, 201, 201, 0.6);
+}
+
+.manPosterDiv{
+    /* width: 200px; */
+    /* border: 1px solid red; */
+    display: flex;
+    justify-content: center;
+}
+.manPoster{
+    margin-right: 20px;
+
+}
+

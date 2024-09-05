@@ -2,6 +2,7 @@ package com.movie.rock.admin.data.response;
 
 
 import com.movie.rock.movie.data.entity.MovieEntity;
+import com.movie.rock.movie.data.entity.MovieFilmEntity;
 import com.movie.rock.movie.data.entity.MoviePostersEntity;
 import com.movie.rock.movie.data.entity.MovieTrailersEntity;
 import com.movie.rock.movie.data.response.MovieInfoResponseDTO.FilmResponseDTO;
@@ -40,7 +41,7 @@ public class AdminMovieSecondInfoResponseDTO {
     }
 
     public static AdminMovieSecondInfoResponseDTO fromEntity(MovieEntity movieEntity,
-                                                             List<MovieTrailersEntity> trailers, List<MoviePostersEntity> posters) {
+                                                             List<MovieTrailersEntity> trailers, List<MoviePostersEntity> posters, MovieFilmEntity movieFilm) {
 
         MoviePostersEntity mainPoster = posters.stream()
                 .filter(p -> p.getPosters().getMainPoster())
@@ -69,7 +70,7 @@ public class AdminMovieSecondInfoResponseDTO {
                 .movieId(movieEntity.getMovieId())
                 .movieTitle(movieEntity.getMovieTitle())
                 .trailer(sortedTrailers)
-                .movieFilm(FilmResponseDTO.fromEntity(movieEntity.getMovieFilm()))
+                .movieFilm(FilmResponseDTO.fromEntity(movieFilm))
                 .poster(sortedPosters)
                 .createDate(movieEntity.getCreateDate())
                 .modifyDate(movieEntity.getModifyDate())

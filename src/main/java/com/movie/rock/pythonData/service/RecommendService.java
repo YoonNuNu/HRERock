@@ -3,8 +3,11 @@ package com.movie.rock.pythonData.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.movie.rock.movie.data.entity.MovieEntity;
+import com.movie.rock.movie.data.repository.MovieRepository;
 import com.movie.rock.movie.data.response.MovieInfoResponseDTO.PosterResponseDTO;
 import com.movie.rock.pythonData.data.PythonResponseDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -13,12 +16,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
+@RequiredArgsConstructor
 public class RecommendService {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final MovieRepository movieRepository;
 
     public List<PythonResponseDTO> getPointsContentRecommendations(Long memNum) {
         return getRecommendations(memNum, "points_content_recommend");
@@ -70,16 +77,42 @@ public class RecommendService {
 
     private List<PythonResponseDTO> readRecommendations(Long memNum, String recommendationType) throws IOException {
         String jsonPath = String.format("src/main/resources/static/json/%s_%d.json", recommendationType, memNum);
-        List<Map<String, Object>> recommendations = readJsonFile(jsonPath);
+        JsonNode rootNode = objectMapper.readTree(new File(jsonPath));
+        JsonNode recommendationsNode = rootNode.get("recommendations");
 
-        if (recommendations.isEmpty()) {
-            return List.of(); // 빈 리스트 반환
+        if (recommendationsNode == null || !recommendationsNode.isArray()) {
+            return List.of();
         }
 
-        return recommendations.stream()
-                .map(this::convertToPythonResponseDTO)
-                .filter(dto -> dto != null) // Null이 아닌 객체만 필터링
+        List<PythonResponseDTO> results = StreamSupport.stream(recommendationsNode.spliterator(), false)
+                .map(JsonNode::asLong)
+                .map(this::getMovieInfo)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .collect(Collectors.toList());
+
+        return results;
+    }
+
+    private Optional<PythonResponseDTO> getMovieInfo(Long movieId) {
+        return movieRepository.findByMovieId(movieId)
+                .map(movie -> {
+                    PosterResponseDTO posterResponseDTO = movie.getPoster().stream()
+                            .filter(poster -> poster.getPosters().getMainPoster())
+                            .findFirst()
+                            .map(poster -> PosterResponseDTO.builder()
+                                    .posterUrls(poster.getPosters().getPosterUrls())
+                                    .mainPoster(true)
+                                    .build())
+                            .orElse(null);
+
+                    return PythonResponseDTO.builder()
+                            .movieId(movie.getMovieId())
+                            .movieTitle(movie.getMovieTitle())
+                            .mainPosterUrl(posterResponseDTO)
+                            .movieDescription(movie.getMovieDescription())
+                            .build();
+                });
     }
 
     private List<Map<String, Object>> readJsonFile(String jsonPath) throws IOException {
@@ -97,26 +130,54 @@ public class RecommendService {
         }
     }
 
+//    private PythonResponseDTO convertToPythonResponseDTO(Map<String, Object> movieData) {
+//        if (movieData == null || movieData.isEmpty()) {
+//            return null;
+//        }
+//
+//        Map<String, Object> posterData = (Map<String, Object>) movieData.get("main_poster");
+//
+//        if (posterData == null || posterData.isEmpty()) {
+//            return null;
+//        }
+//
+//        PosterResponseDTO posterResponseDTO = PosterResponseDTO.builder()
+//                .posterUrls((String) posterData.get("url"))
+//                .mainPoster((Boolean) posterData.get("main_poster"))
+//                .build();
+//
+//        return PythonResponseDTO.builder()
+//                .movieId(((Number) movieData.get("movie_id")).longValue())
+//                .movieTitle((String) movieData.get("movie_title"))
+//                .mainPosterUrl(posterResponseDTO)
+//                .build();
+//    }
     private PythonResponseDTO convertToPythonResponseDTO(Map<String, Object> movieData) {
         if (movieData == null || movieData.isEmpty()) {
             return null;
         }
 
-        Map<String, Object> posterData = (Map<String, Object>) movieData.get("main_poster");
+        Long movieId = ((Number) movieData.get("movie_id")).longValue();
+        Optional<MovieEntity> movieOpt = movieRepository.findByMovieId(movieId);
 
-        if (posterData == null || posterData.isEmpty()) {
+        // 영화가 존재하지 않으면 null 반환
+        if (movieOpt.isEmpty()) {
             return null;
         }
 
+        MovieEntity movie = movieOpt.get();
+        Map<String, Object> posterData = (Map<String, Object>) movieData.get("main_poster");
+
         PosterResponseDTO posterResponseDTO = PosterResponseDTO.builder()
-                .posterUrls((String) posterData.get("url"))
-                .mainPoster((Boolean) posterData.get("main_poster"))
+                .posterUrls(posterData != null ? (String) posterData.get("url") : null)
+                .mainPoster(posterData != null ? (Boolean) posterData.get("main_poster") : null)
                 .build();
 
         return PythonResponseDTO.builder()
-                .movieId(((Number) movieData.get("movie_id")).longValue())
-                .movieTitle((String) movieData.get("movie_title"))
+                .movieId(movie.getMovieId())
+                .movieTitle(movie.getMovieTitle())
                 .mainPosterUrl(posterResponseDTO)
+                .movieDescription(movie.getMovieDescription())
                 .build();
     }
 }

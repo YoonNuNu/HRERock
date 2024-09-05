@@ -44,14 +44,24 @@ public class MyPageController {
     @GetMapping("/history")
     public ResponseEntity<Page<MyPageWatchHistoryResponseDTO>> getWatchHistory(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "0",name = "page") int page,
+            @RequestParam(defaultValue = "10",name = "size") int size) {
 
         Long memNum = userDetails.getMemNum();// userDetails에서 memNum을 추출하는 로직
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("watchDate").descending());
         Page<MyPageWatchHistoryResponseDTO> watchHistory = myPageService.getMyPageWatchHistory(memNum, pageable);
         return ResponseEntity.ok(watchHistory);
+    }
+
+    //마이페이지 시청 기록 삭제
+    @DeleteMapping("/history/{watchId}")
+    public ResponseEntity<?> deleteWatchHistory(@PathVariable("watchId")  Long watchId,
+                                                @AuthenticationPrincipal CustomUserDetails userDetails){
+        Long memNum = userDetails.getMemNum();// userDetails에서 memNum을 추출하는 로직
+        myPageService.deleteWatchHistory(watchId,memNum);
+        return ResponseEntity.ok().body(Map.of("message", "시청 기록이 성공적으로 삭제되었습니다."));
+
     }
 
 
@@ -68,7 +78,7 @@ public class MyPageController {
     // 마이페이지 리뷰 삭제하기
     @DeleteMapping("/reviews/{reviewId}")
     public ResponseEntity<?> deleteReview(
-            @PathVariable Long reviewId,
+            @PathVariable("reviewId") Long reviewId,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         Long memNum = userDetails.getMemNum();
         myPageService.deleteReview(reviewId, memNum);

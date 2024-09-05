@@ -1,0 +1,90 @@
+[
+  {
+    "id": "1",
+    "movieName": "섀도우 플레이",
+    "movieNameInEnglish": "",
+    "movieDescription": " ",
+    "mainPosterUrl": "https://image.tving.com/ntgs/contents/CTC/caim/CAIM1190/ko/20240314/0553/M000150575.jpg/dims/resize/F_webp,400",
+    "filmAgeRating": "15"
+  },
+  {
+    "id": "2",
+    "movieName": "언젠가 서울",
+    "movieNameInEnglish": "Seoul someday",
+    "movieDescription": " ",
+    "mainPosterUrl": "https://image.tving.com/ntgs/contents/CTC/caim/CAIM1190/ko/20231116/0228/M000279136.jpg/dims/resize/F_webp,400",
+    "filmAgeRating": "12"
+  },
+  {
+    "id": "3",
+    "movieName": "벚꽃이 지나는 길",
+    "movieNameInEnglish": "Cherry Blossom Road",
+    "movieDescription": " ",
+    "mainPosterUrl": "https://image.tving.com/ntgs/contents/CTC/caim/CAIM1150/ko/20190924/M000252133.jpg/dims/resize/F_webp,400",
+    "movieOpeningDate": "2023-02-19T15:00:00.000Z",
+    "filmAgeRating": "18"
+  },
+  {
+    "id": "4",
+    "movieName": "한강에는 비가 내린다",
+    "movieNameInEnglish": "It's raining on the Han River",
+    "movieDescription": " ",
+    "mainPosterUrl": "https://image.tving.com/ntgs/contents/CTC/caim/CAIM2300/ko/20231127/1612/M000248933.jpg/dims/resize/F_webp,400",
+    "movieOpeningDate": "2023-02-18T15:00:00.000Z",
+    "filmAgeRating": "ALL"
+  },
+  {
+    "id": "5",
+    "movieName": "엔드 오브 애프터글로우",
+    "movieNameInEnglish": "End of Afterglow",
+    "movieDescription": " ",
+    "mainPosterUrl": "https://image.tving.com/ntgs/contents/CTC/caim/CAIM2100/ko/20240813/0010/M000364173.jpg/dims/resize/F_webp,400",
+    "movieOpeningDate": "2023-02-26T15:00:00.000Z",
+    "filmAgeRating": "15"
+  },
+  {
+    "id": "6",
+    "movieName": "섀도우 플레이",
+    "movieNameInEnglish": "Shadow Play",
+    "movieDescription": " ",
+    "mainPosterUrl": "https://image.tving.com/ntgs/contents/CTC/caim/CAIM1160/ko/20191227/M000275133.jpg/dims/resize/F_webp,400",
+    "movieOpeningDate": "2023-02-25T15:00:00.000Z",
+    "filmAgeRating": "15"
+  },
+  {
+    "id": "7",
+    "movieName": "언젠가 서울",
+    "movieNameInEnglish": "Seoul someday",
+    "movieDescription": " ",
+    "mainPosterUrl": "\nhttps://image.tving.com/ntgs/contents/CTC/caim/CAIM2100/ko/20231127/1802/M000315134.png/dims/resize/F_webp,400",
+    "movieOpeningDate": "2023-02-23T15:00:00.000Z",
+    "filmAgeRating": "12"
+  },
+  {
+    "id": "8",
+    "movieName": "벚꽃이 지나는 길",
+    "movieNameInEnglish": "Cherry Blossom Road",
+    "movieDescription": " ",
+    "mainPosterUrl": "https://image.tving.com/ntgs/contents/CTC/caim/CAIM2100/ko/20240805/0425/M000361495.jpg/dims/resize/F_webp,400",
+    "movieOpeningDate": "2023-02-19T15:00:00.000Z",
+    "filmAgeRating": "18"
+  },
+  {
+    "id": "9",
+    "movieName": "한강에는 비가 내린다",
+    "movieNameInEnglish": "It's raining on the Han River",
+    "movieDescription": " ",
+    "mainPosterUrl": "https://image.tving.com/ntgs/contents/CTC/caim/CAIM2100/ko/20240130/0120/M000365392.jpg/dims/resize/F_webp,400",
+    "movieOpeningDate": "2023-02-18T15:00:00.000Z",
+    "filmAgeRating": "ALL"
+  },
+  {
+    "id": "10",
+    "movieName": "한강에는 비가 내린다",
+    "movieNameInEnglish": "It's raining on the Han River",
+    "movieDescription": " ",
+    "mainPosterUrl": "https://image.tving.com/ntgs/contents/CTC/caim/CAIM2200/ko/20200311/M000293333.jpg/dims/resize/F_webp,400",
+    "movieOpeningDate": "2023-02-18T15:00:00.000Z",
+    "filmAgeRating": "ALL"
+  }
+]

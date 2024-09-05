@@ -10,7 +10,6 @@ import java.util.List;
 
 public interface AdminMovieService {
 
-
     //AdminMovieListController -> 페이징 처리한 영화목록 조회
     Page<AdminMovieListResponseDTO> getMovieList(Pageable pageable);
 
@@ -31,7 +30,6 @@ public interface AdminMovieService {
     //MovieAdminServiceImpl -> 포스터 추가
     PosterResponseDTO addPoster(AdminPosterRequestDTO adminPosterRequestDTO);
 
-
     //영화 아이디,이름 저장
     AdminMovieFirstInfoTitleResponseDTO saveTitleInfo(AdminMovieFirstInfoTitleRequestDTO adminMovieFirstInfoTitleRequestDTO);
 
@@ -41,11 +39,8 @@ public interface AdminMovieService {
     //영화 두번째 추가 페이지(통합 업로드)
     AdminMovieSecondInfoResponseDTO addCompleteMovie(AdminMovieSecondInfoRequestDTO adminMovieSecondInfoRequestDTO);
 
-
-
-
     //MovieAdminServiceImpl -> 영화 삭제
-    void deleteMovies(List<Long> movieIds);
+    void deleteMovies(List<Long> movieIds, List<Long> posterIds, List<Long> trailerIds,List<Long> reviewIds);
 
     //영화수정
     AdminMovieFirstInfoResponseDTO updateMovieFirst(Long movieId,AdminMovieFirstInfoRequestDTO adminMovieFirstInfoRequestDTO);

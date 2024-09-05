@@ -10,9 +10,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UpdateMemberDTO {
     private String memNewPassword;
+
     private String memNewPasswordCheck;
+
     private String memNewEmail;
+
     private String memNewTel;
+
+    private String memNewProfile;
 
 
 }
