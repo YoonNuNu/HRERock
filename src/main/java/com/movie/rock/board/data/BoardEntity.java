@@ -29,7 +29,7 @@ public class BoardEntity extends BaseTimeEntity {
     private String boardTitle;
 
     //공지사항 내용
-    @Column(name = "board_content", nullable = false)
+    @Column(name = "board_content", nullable = false, columnDefinition = "TEXT")
     private String boardContent;
 
 //    공지사항 글생성 시간

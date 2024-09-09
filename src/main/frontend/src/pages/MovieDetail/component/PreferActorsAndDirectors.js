@@ -15,7 +15,6 @@ const PreferActorsAndDirectors = ({ memNum }) => {
             setError('인증 토큰이 없습니다.');
             return;
         }
-
         try {
             const listTypes = ['personal_actors', 'personal_directors'];
             const requests = listTypes.map(type =>
@@ -23,9 +22,7 @@ const PreferActorsAndDirectors = ({ memNum }) => {
                     headers: { 'Authorization': `Bearer ${token}` }
                 })
             );
-
             const [actorsResponse, directorsResponse] = await Promise.all(requests);
-
             setActorsData(actorsResponse.data);
             setDirectorsData(directorsResponse.data);
         } catch (error) {

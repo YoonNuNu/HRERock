@@ -47,12 +47,15 @@ const Recent = () => {
 
     useEffect(() => {
         const fetchRecentMovies = async () => {
-            const response = await axios.get(`/user/main/updated`);
-            setRecentMovies(response.data);
+            try {
+                const response = await axios.get(`/user/main/updated`);
+                setRecentMovies(response.data);
+            } catch (error) {
+                console.error('신규 영화 리스트를 가져오는 중 오류 발생:', error);
+            }
         };
-
         fetchRecentMovies();
-    }, [navigate]);
+    }, []);
 
     return (
         <Container>

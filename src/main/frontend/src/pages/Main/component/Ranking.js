@@ -52,11 +52,15 @@ const Ranking = () => {
 
     useEffect(() => {
         const fetchRankingMovies = async () => {
-            const response = await axios.get(`/user/main/ranking`);
-            setRankMovies(response.data);
+            try{
+                const response = await axios.get(`/user/main/ranking`);
+                setRankMovies(response.data);
+            } catch (error) {
+                console.error('인기 순위 리스트를 가져오는 중 오류 발생:', error);
+            }
         };
         fetchRankingMovies();
-    }, [navigate])
+    }, [])
 
 
     return (

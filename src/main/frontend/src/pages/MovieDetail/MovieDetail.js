@@ -103,7 +103,6 @@ const MovieDetail = () => {
                 setMemberInfo(memberInfo);
                 setMemRole(memberInfo.role);
                 await fetchMovieDetail(token, movieId);
-                // await fetchReviews(token, movieId);
                 await checkFavoriteStatus(token);
                 setIsLoading(false);
             } catch (error) {
@@ -168,8 +167,6 @@ const MovieDetail = () => {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             setMovieDetail(response.data);
-            console.log("영화정보", response.data);
-            console.log("포스터 데이터:", response.data.posters);
         } catch (error) {
             console.error('영화 상세 정보를 가져오는 중 오류 발생:', error);
             setMovieDetail(null);
@@ -204,10 +201,6 @@ const MovieDetail = () => {
                 } else {
                     alert("영화 정보를 불러오는 데 실패했습니다.");
                 }
-            } else if (error.request) {
-                setError("서버로부터 응답이 없습니다. 네트워크 연결을 확인해주세요.");
-            } else {
-                setError("요청 설정 중 오류가 발생했습니다.");
             }
         }
     }, [movieId, navigate, setError]);

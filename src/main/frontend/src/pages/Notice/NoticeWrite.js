@@ -433,4 +433,3 @@ const NoticeViewBtn = styled.div`
     justify-content: center;
     `
 export default NoticeWrite;
-

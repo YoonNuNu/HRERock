@@ -25,7 +25,6 @@ const Videos = () => {
         const fetchVideos = async () => {
             try {
                 const response = await axios.get(`/user/main/updated-trailers`);
-                console.log('Fetched data:', response.data);
                 setMovies(response.data);
             } catch (error) {
                 console.error('비디오 데이터를 가져오는 중 오류 발생:', error);
@@ -56,14 +55,14 @@ const Videos = () => {
                 // 배열인 경우 mainTrailer가 true인 트레일러를 찾습니다
                 const mainTrailer = movie.trailer.find(t => t.mainTrailer === true);
                 if (mainTrailer) {
-                    console.log('메인 트레일러 URL:', mainTrailer.trailerUrls);
+                    // console.log('메인 트레일러 URL:', mainTrailer.trailerUrls);
                     return mainTrailer.trailerUrls;
                 }
                 // mainTrailer가 없으면 첫 번째 트레일러를 사용
                 return movie.trailer[0].trailerUrls;
             } else if (movie.trailer.mainTrailer === true) {
                 // 단일 객체인 경우 mainTrailer가 true인지 확인합니다
-                console.log('메인 트레일러 URL:', movie.trailer.trailerUrls);
+                // console.log('메인 트레일러 URL:', movie.trailer.trailerUrls);
                 return movie.trailer.trailerUrls;
             }
         }
@@ -161,7 +160,7 @@ const MainVideoWrapper = styled.div`
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 110%;  
+    height: 100%;  
     overflow: hidden;
     object-fit: contain;
 `;

@@ -207,7 +207,6 @@ const MovieReview = ({ movieId, movieDetail, memRole, correspondMemName, corresp
             const response = await axios.delete(`/user/movies/detail/${validMovieId}/reviews/${reviewId}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
-
             const { currentPage: newPage, totalReviews: newTotalReviews } = response.data;
 
             //즉시 상태 업데이트
@@ -223,19 +222,13 @@ const MovieReview = ({ movieId, movieDetail, memRole, correspondMemName, corresp
                 // 현재 페이지의 마지막 리뷰를 삭제한 경우, 이전 페이지로 이동
                 pageToFetch = currentPage - 1;
             } else {
-                // 그 외의 경우, 현재 페이지 유지
-                pageToFetch = currentPage;
+                pageToFetch = currentPage; // 그 외의 경우, 현재 페이지 유지
             }
-
             setCurrentPage(pageToFetch);
             await fetchReviews(token, pageToFetch);
-            // setTotalReviews(newTotalReviews);
             setEditingReviewId(null); // 삭제 후 편집 ID 초기화
-
             alert('리뷰가 삭제되었습니다.');
-
             setGraphUpdateTrigger(prev => prev + 1);
-
         } catch (error) {
             console.error('리뷰 삭제 중 오류 발생:', error);
             alert('리뷰 삭제에 실패했습니다. 다시 시도해주세요.');
@@ -278,11 +271,9 @@ const MovieReview = ({ movieId, movieDetail, memRole, correspondMemName, corresp
             console.error('AccessToken 또는 ReviewId가 없습니다');
             return;
         }
-
         try {
             const currentLikeStatus = reviewLikes[reviewId] || { isLike: false, likeCount: 0 };
             const url = `/user/movies/detail/${validMovieId}/reviews/${reviewId}/likes`;
-
             let response;
             if (currentLikeStatus.isLike) {
                 response = await axios.delete(url, {
@@ -294,12 +285,10 @@ const MovieReview = ({ movieId, movieDetail, memRole, correspondMemName, corresp
                     headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
                 });
             }
-
             const newLikeStatus = {
                 isLike: response.data.like,
                 likeCount: response.data.likeCount
             };
-
             setReviewLikes(prev => ({
                 ...prev,
                 [reviewId]: newLikeStatus
@@ -637,7 +626,7 @@ const ChartWrap = styled.div`
     // height: 500px;
     margin: 0 auto;
     margin-top: 80px;
-    padding-top: 40px;
+    padding-top: 20px;
     margin-bottom: 40px;
     display: flex;
     border-radius: 12px;
@@ -646,8 +635,8 @@ const ChartWrap = styled.div`
     //디자인
     //background-color: rgba(255, 255, 255, 0.1);
     background-color:#fff;
-
 `;
+
 //리뷰 박스
 const OnlyReviewContainer = styled.div`
     padding: 20px;

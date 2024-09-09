@@ -45,17 +45,6 @@ const PersonalCharts = ({ memNum }) => {
         }
     }, [memNum]);
 
-    // useEffect(() => {
-    //     fetchPersonalChartImages();
-    //
-    //     return () => {
-    //         // Cleanup: revoke object URLs
-    //         Object.values(chartImages).forEach(url => {
-    //             if (url) URL.revokeObjectURL(url);
-    //         });
-    //     };
-    // }, [fetchPersonalChartImages, chartImages]);
-
     useEffect(() => {
         fetchPersonalChartImages();
     }, [fetchPersonalChartImages]);

@@ -26,16 +26,16 @@ public class RecommendController {
         return ResponseEntity.ok(recommendService.getPointsContentRecommendations(memNum));
     }
 
-    // 영화 협업 필터링 추천
-    @GetMapping("/{memNum}/movie-collab")
-    public ResponseEntity<List<PythonResponseDTO>> getMovieCollabRecommendations(@PathVariable("memNum") Long memNum) {
-        return ResponseEntity.ok(recommendService.getMovieCollabRecommendations(memNum));
-    }
-
     // 포인트 협업 필터링 추천
     @GetMapping("/{memNum}/points-collab")
     public ResponseEntity<List<PythonResponseDTO>> getPointsCollabRecommendations(@PathVariable("memNum") Long memNum) {
         return ResponseEntity.ok(recommendService.getPointsCollabRecommendations(memNum));
+    }
+
+    // 영화 협업 필터링 추천
+    @GetMapping("/{memNum}/movie-collab")
+    public ResponseEntity<List<PythonResponseDTO>> getMovieCollabRecommendations(@PathVariable("memNum") Long memNum) {
+        return ResponseEntity.ok(recommendService.getMovieCollabRecommendations(memNum));
     }
 
     // 파일 삭제처리

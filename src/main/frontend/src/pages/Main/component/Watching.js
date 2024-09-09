@@ -41,20 +41,47 @@ function Watching() {
         },
     };
 
+    // useEffect(() => {
+    //     const fetchWatchingMovies = async () => {
+    //         try {
+    //             const token = localStorage.getItem('accessToken');
+    //             if (!token) {
+    //                 console.error('No access token found');
+    //                 setError('접근 토큰이 없습니다. 다시 로그인해주세요.');
+    //                 return;
+    //             }
+    //
+    //             const response = await axios.get('/user/main/history/continue', {
+    //                 headers: {'Authorization': `Bearer ${token}`}
+    //             });
+    //             console.log('Response data:', response.data.watchHistory); // 전체 응답 데이터 로깅
+    //
+    //             // 진행상태 저장 및 데이터 매핑
+    //             const mappedMovies = response.data.watchHistory.map(movie => ({
+    //                 id: movie.movieId,
+    //                 movieName: movie.movieTitle,
+    //                 mainPosterUrl: movie.poster.posterUrls,
+    //                 movieDescription: movie.movieDescription,
+    //                 progressPercentage: movie.progressPercentage * 100,
+    //                 watchId: movie.watchId,
+    //                 watchTime: movie.watchTime,
+    //                 totalDuration: movie.totalDuration
+    //             }));
+    //             setWatchingMovies(mappedMovies);
+    //         } catch (error) {
+    //             console.error('청 중인 영화 목록을 가져오는 중 오류 발생:', error);
+    //         }
+    //     };
+    //     fetchWatchingMovies();
+    // }, []);
+
     useEffect(() => {
         const fetchWatchingMovies = async () => {
             try {
                 const token = localStorage.getItem('accessToken');
-                if (!token) {
-                    console.error('No access token found');
-                    setError('접근 토큰이 없습니다. 다시 로그인해주세요.');
-                    return;
-                }
-
                 const response = await axios.get('/user/main/history/continue', {
                     headers: {'Authorization': `Bearer ${token}`}
                 });
-                console.log('Response data:', response.data.watchHistory); // 전체 응답 데이터 로깅
 
                 // 진행상태 저장 및 데이터 매핑
                 const mappedMovies = response.data.watchHistory.map(movie => ({
@@ -69,12 +96,12 @@ function Watching() {
                 }));
                 setWatchingMovies(mappedMovies);
             } catch (error) {
-                console.error('Error fetching continue watching movies:', error);
-                setError('시청 중인 영화 목록을 가져오는데 실패했습니다.')
+                console.error('시청 중인 영화 목록을 가져오는 중 오류 발생:', error);
             }
         };
         fetchWatchingMovies();
     }, []);
+
 
     return (
         <Container>

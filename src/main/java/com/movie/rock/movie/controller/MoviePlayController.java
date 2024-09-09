@@ -27,7 +27,6 @@ public class MoviePlayController {
         if (userDetails == null) {
             throw new CommonException.UnauthorizedAccessException(); // 인증되지 않은 경우 예외 처리
         }
-
         MoviePlayResponseDTO play = moviePlayService.getMoviePlay(movieId, userDetails.getMemNum());
 
         return ResponseEntity.ok(play);

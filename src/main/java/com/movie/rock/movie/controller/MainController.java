@@ -17,6 +17,7 @@ public class MainController {
 
     private final MainService mainService;
 
+    // 최근 추가된 영화 - mainTrailers
     @GetMapping("/updated-trailers")
     public ResponseEntity<List<MainResponseDTO>> getUpdatedTrailers() {
         List<MainResponseDTO> updatedMoviesWithTrailers = mainService.getUpdatedMoviesWithTrailers();
@@ -24,13 +25,15 @@ public class MainController {
         return ResponseEntity.ok(updatedMoviesWithTrailers);
     }
 
+    // 인기 순위
     @GetMapping("/ranking")
     public ResponseEntity<List<MainResponseDTO>> getTopRatedMovies() {
         List<MainResponseDTO> topRatedMovies = mainService.getTopRatedMovies();
-        //갯수 회의
+
         return ResponseEntity.ok(topRatedMovies);
     }
 
+    // 최근 추가된 영화
     @GetMapping("/updated")
     public ResponseEntity<List<MainResponseDTO>> getUpdatedMovies() {
         List<MainResponseDTO> updatedMovies = mainService.getUpdatedMovies();

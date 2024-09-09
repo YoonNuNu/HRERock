@@ -135,10 +135,8 @@ function AdminNoticeListPage() {
 
     // 엔터키 기능
     const handleEnterKey = (e) => {
-
         if(e.key === 'Enter'){
-            console.log("input enter key:")
-            // activeButton();
+            searchBoards(1);
         }
     }
 
@@ -346,7 +344,7 @@ function AdminNoticeListPage() {
                                                 value={item.boardId}
                                             />
                                         </CommonTableColumn>
-                                        <CommonTableColumn>{noticeNumber(index)}</CommonTableColumn>
+                                        <CommonTableColumn>{noticeNumber(item.boardId)}</CommonTableColumn>
                                         <CommonTableColumn>
                                             <Link to={`/user/notice/${item.boardId}`}>{item.boardTitle}</Link>
                                         </CommonTableColumn>

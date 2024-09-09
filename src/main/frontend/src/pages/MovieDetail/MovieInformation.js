@@ -27,8 +27,6 @@ const MovieInformation = () => {
         }
     }, [error]);
 
-
-
     // 영화 상세 정보
     const fetchMovieDetail = useCallback(async (token) => {
         try {
@@ -36,35 +34,10 @@ const MovieInformation = () => {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             setMovieDetail(response.data);
-            console.log("영화정보", response.data);
         }
         catch (error) {
             console.error('영화 상세 정보를 가져오는 중 오류 발생:', error);
             setMovieDetail(null);
-
-            if (error.response) {
-                const errorData = error.response.data;
-                if (typeof errorData === 'string') {
-                    setError(errorData);
-                } else if (errorData.errCode) {
-                    switch (errorData.errCode) {
-                        case "ERR_R_RATED_MOVIE":
-                            alert("청소년 관람 불가 등급의 영화입니다.");
-                            break;
-                        case "ERR_MOVIE_NOT_FOUND":
-                            alert("영화를 찾을 수 없습니다.");
-                            break;
-                        default:
-                            alert(errorData.message || "영화 정보를 불러오는 데 실패했습니다.");
-                    }
-                } else {
-                    alert("영화 정보를 불러오는 데 실패했습니다.");
-                }
-            } else if (error.request) {
-                setError("서버로부터 응답이 없습니다. 네트워크 연결을 확인해주세요.");
-            } else {
-                setError("요청 설정 중 오류가 발생했습니다.");
-            }
         }
         finally{
             setIsLoading(false)

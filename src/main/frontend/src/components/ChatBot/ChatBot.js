@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
-import { api } from '../../api/axios';
 
 //css
 import './css/ChatBot.css';
@@ -32,7 +31,7 @@ function ChatBot() {
             if (!token) return;
 
             try {
-                const response = await api.get('/auth/memberinfo', {
+                const response = await axios.get('/auth/memberinfo', {
                     headers: {'Authorization': 'Bearer ' + token}
                 });
                 const { memRole, memNum } = response.data;
@@ -57,7 +56,7 @@ function ChatBot() {
         const token = localStorage.getItem('accessToken');
         if (!token){ return; }
         try {
-            const response = await api.post('/api/chatrooms/create', {}, {
+            const response = await axios.post('/api/chatrooms/create', {}, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const newChatRoomId = response.data.chatRoomId;
@@ -118,7 +117,7 @@ function ChatBot() {
     const fetchActiveChatRooms = async () => {
         const token = localStorage.getItem('accessToken');
         try {
-            const response = await api.get('/api/admin/chatrooms/active', {
+            const response = await axios.get('/api/admin/chatrooms/active', {
                 headers: {'Authorization': `Bearer ${token}`}
             });
             setActiveChatRooms(response.data);
@@ -132,7 +131,7 @@ function ChatBot() {
     const joinChatRoom = async (chatRoomId) => {
         const token = localStorage.getItem('accessToken');
         try {
-            const response = await api.get(`/api/admin/chatrooms/${chatRoomId}/messages`, {
+            const response = await axios.get(`/api/admin/chatrooms/${chatRoomId}/messages`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             setMessages(response.data);
@@ -156,7 +155,7 @@ function ChatBot() {
         if (!token) return;
 
         try {
-            const response = await api.post('/api/chat/message', {
+            const response = await axios.post('/api/chat/message', {
                 messageText: inputMessage,
                 chatRoomId: chatRoomId
             }, {

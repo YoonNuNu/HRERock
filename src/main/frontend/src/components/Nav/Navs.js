@@ -97,17 +97,14 @@ function Navs() {
 
     const searchWrapper = useRef();
 
-    if (loading) return null;
-    if (error) return window.alert('통신에 실패하였습니다');
+    // if (loading) return null;
+    // if (error) return window.alert('통신에 실패하였습니다');
 
 
     //HTML
     return (
         <>
-
             <NavWrapper scrollposition={scrollPosition}>
-
-
                 <MenuWrapper>
                     <LogoImg
                         alt="logo"
@@ -127,17 +124,6 @@ function Navs() {
                         홈
                     </MenuName>
 
-
-                    {/*<MenuName*/}
-                    {/*    onClick={() => {*/}
-                    {/*        goToPage('/user/moviepage/:movieId');*/}
-                    {/*    }}*/}
-                    {/*    scrollposition={scrollPosition}*/}
-                    {/*>*/}
-                    {/*    영화*/}
-                    {/*</MenuName>*/}
-
-
                     <MenuName
                         onClick={() => {
                             goToPage('/user/Recommend');
@@ -147,18 +133,14 @@ function Navs() {
                         NEW!추천콘텐츠
                     </MenuName>
 
-
-
                     <MenuName
                         onClick={() => {
-                            goToPage('user/notice');
+                            goToPage('/user/notice');
                         }}
                         scrollposition={scrollPosition}
                     >
                         공지사항
                     </MenuName>
-
-
 
                     <MenuName
                         onClick={() => {
@@ -169,8 +151,6 @@ function Navs() {
                         마이페이지
                     </MenuName>
 
-
-
                     <MenuName
                         onClick={() => {
                             goToPage('/admin/movieList');
@@ -180,8 +160,6 @@ function Navs() {
                         관리자
                     </MenuName>
                 </MenuWrapper>
-
-
 
                 {/*  검색창 */}
                 <SearchWrapper ref={searchWrapper}>

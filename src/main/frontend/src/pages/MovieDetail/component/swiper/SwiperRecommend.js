@@ -156,6 +156,7 @@ const OverlayBtn = styled.button`
 const PosterImg = styled.img`
     width: 240px !important;
     height: 360px !important;
+    border-radius: 5px;
     object-fit: cover;
     //border-radius: 5px;
 `;

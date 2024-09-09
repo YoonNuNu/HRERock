@@ -339,7 +339,7 @@ const NoticeList = () => {
                                         value={item.boardId}
                                     />
                                 </CommonTableColumn>
-                                <CommonTableColumn>{noticeNumber(index)}</CommonTableColumn>
+                                <CommonTableColumn>{noticeNumber(item.boardId)}</CommonTableColumn>
                                 <CommonTableColumn>
                                     <Link to={`/user/notice/${item.boardId}`}>{item.boardTitle}</Link>
                                 </CommonTableColumn>

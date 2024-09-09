@@ -138,7 +138,6 @@ public class PersonalChartController {
     // 개인 시청 장르 차트
     @GetMapping("/{memNum}/personal_genres-chart")
     public ResponseEntity<byte[]> personalGenresChart(@PathVariable("memNum") Long memNum) throws IOException {
-//        log.info("Received request for personal genre chart for member number: {}", memNum);
         personalChartService.runPersonalPythonScript(memNum);
 
         return getPersonalChartResponseEntity(memNum, "personal_genres");
@@ -147,7 +146,6 @@ public class PersonalChartController {
     // 개인 리뷰 매력 포인트 차트
     @GetMapping("/{memNum}/personal_attraction-chart")
     public ResponseEntity<byte[]> personalAttractionChart(@PathVariable("memNum") Long memNum) throws IOException {
-//        log.info("Received request for personal genre chart for member number: {}", memNum);
         personalChartService.runPersonalPythonScript(memNum);
 
         return getPersonalChartResponseEntity(memNum, "personal_attraction");
@@ -156,7 +154,6 @@ public class PersonalChartController {
     // 개인 리뷰 감정 포인트 차트
     @GetMapping("/{memNum}/personal_emotion-chart")
     public ResponseEntity<byte[]> personalEmotionChart(@PathVariable("memNum") Long memNum) throws IOException {
-//        log.info("Received request for personal genre chart for member number: {}", memNum);
         personalChartService.runPersonalPythonScript(memNum);
 
         return getPersonalChartResponseEntity(memNum, "personal_emotion");
@@ -182,7 +179,6 @@ public class PersonalChartController {
 
     // 이미지 가져오기
     private ResponseEntity<byte[]> getPersonalChartResponseEntity(Long memNum, String chartType) throws IOException {
-//        log.info("Requested chart type: {}", chartType);
         Path path = Paths.get("src/main/resources/static/images/" + chartType + "_" + memNum + ".png");
 
         if (Files.notExists(path)) {

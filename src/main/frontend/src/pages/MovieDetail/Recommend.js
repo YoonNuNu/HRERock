@@ -18,6 +18,7 @@ import 'swiper/css/scrollbar';
 
 const Recommend = () => {
     const [error, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(null);
     const navigate = useNavigate();
     const [memberInfo, setMemberInfo] = useState(null);
     const [filesToDelete, setFilesToDelete] = useState({
@@ -46,7 +47,8 @@ const Recommend = () => {
             }
             throw error;
         }
-    }, [navigate]);
+    // }, [navigate]);
+    }, []);
 
     // File deletion functions
     const addFileToDelete = useCallback((fileName, fileType) => {
@@ -71,56 +73,122 @@ const Recommend = () => {
     }, [addFileToDelete]);
 
     useEffect(() => {
-        const token = localStorage.getItem('accessToken');
-        if (token && !memberInfo) {
-            fetchMemberInfo(token)
-                .then(info => {
-                    setMemberInfo(info);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    setError('데이터를 불러오는데 실패했습니다.');
-                });
-        }
+        const fetchData = async () => {
+            const token = localStorage.getItem('accessToken');
+            if (!token) {
+                alert("로그인이 필요합니다.");
+                navigate('/login');
+                return;
+            }
 
-        // Clean up function to delete files on unmount
+            try {
+                const info = await fetchMemberInfo(token);
+                setMemberInfo(info);
+                addFilesToDeleteList(info.memNum);
+                setIsLoading(false);
+            } catch (error) {
+                console.error("데이터 로딩 중 오류 발생:", error);
+                if (error.response && error.response.status === 401) {
+                    alert("로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
+                    localStorage.removeItem('accessToken');
+                    navigate('/login');
+                } else {
+                    setError("데이터를 불러오는데 실패했습니다.");
+                }
+                setIsLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [navigate, fetchMemberInfo, addFilesToDeleteList]);
+
+    useEffect(() => {
         return () => {
             if ((filesToDelete.images.length > 0 || filesToDelete.json.length > 0) && memberInfo) {
                 const deleteFiles = async () => {
                     try {
                         const token = localStorage.getItem('accessToken');
-                        // Delete image files
                         if (filesToDelete.images.length > 0) {
                             await axios.post(`/user/personal/${memberInfo.memNum}/delete`,
                                 { fileNames: filesToDelete.images },
                                 { headers: { 'Authorization': `Bearer ${token}` } }
                             );
                         }
-
-                        // Delete JSON files
                         if (filesToDelete.json.length > 0) {
                             await axios.post(`/user/personal/${memberInfo.memNum}/delete`,
                                 { fileNames: filesToDelete.json },
                                 { headers: { 'Authorization': `Bearer ${token}` } }
                             );
                         }
-
                         console.log('임시 파일들이 성공적으로 삭제되었습니다.');
                     } catch (error) {
                         console.error('임시 파일 삭제 중 오류 발생:', error);
                     }
                 };
-
                 deleteFiles();
             }
         };
-    }, [filesToDelete, memberInfo, fetchMemberInfo]);
+    }, [filesToDelete, memberInfo]);
 
-    useEffect(() => {
-        if (memberInfo && memberInfo.memNum) {
-            addFilesToDeleteList(memberInfo.memNum);
-        }
-    }, [memberInfo, addFilesToDeleteList]);
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>{error}</div>;
+    }
+
+    // useEffect(() => {
+    //     const token = localStorage.getItem('accessToken');
+    //     if (token && !memberInfo) {
+    //         fetchMemberInfo(token)
+    //             .then(info => {
+    //                 setMemberInfo(info);
+    //             })
+    //             .catch(error => {
+    //                 console.error('Error:', error);
+    //                 setError('데이터를 불러오는데 실패했습니다.');
+    //             });
+    //     }
+    //
+    //     // Clean up function to delete files on unmount
+    //     return () => {
+    //         if ((filesToDelete.images.length > 0 || filesToDelete.json.length > 0) && memberInfo) {
+    //             const deleteFiles = async () => {
+    //                 try {
+    //                     const token = localStorage.getItem('accessToken');
+    //                     // Delete image files
+    //                     if (filesToDelete.images.length > 0) {
+    //                         await axios.post(`/user/personal/${memberInfo.memNum}/delete`,
+    //                             { fileNames: filesToDelete.images },
+    //                             { headers: { 'Authorization': `Bearer ${token}` } }
+    //                         );
+    //                     }
+    //
+    //                     // Delete JSON files
+    //                     if (filesToDelete.json.length > 0) {
+    //                         await axios.post(`/user/personal/${memberInfo.memNum}/delete`,
+    //                             { fileNames: filesToDelete.json },
+    //                             { headers: { 'Authorization': `Bearer ${token}` } }
+    //                         );
+    //                     }
+    //
+    //                     console.log('임시 파일들이 성공적으로 삭제되었습니다.');
+    //                 } catch (error) {
+    //                     console.error('임시 파일 삭제 중 오류 발생:', error);
+    //                 }
+    //             };
+    //
+    //             deleteFiles();
+    //         }
+    //     };
+    // }, [filesToDelete, memberInfo, fetchMemberInfo]);
+    //
+    // useEffect(() => {
+    //     if (memberInfo && memberInfo.memNum) {
+    //         addFilesToDeleteList(memberInfo.memNum);
+    //     }
+    // }, [memberInfo, addFilesToDeleteList]);
 
     return (
         <WrapBody>

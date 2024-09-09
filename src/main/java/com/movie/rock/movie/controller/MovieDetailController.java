@@ -21,8 +21,7 @@ public class MovieDetailController {
     @GetMapping("/detail/{movieId}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")  //사용자 관리자 모두 접근가능
     public ResponseEntity<MovieDetailResponseDTO> showMovieDetail(@PathVariable("movieId") Long movieId,
-                                                                  @AuthenticationPrincipal CustomUserDetails userDetails,
-                                                                  @RequestParam(name = "reviewPage", defaultValue = "1") int reviewPage) {
+                                                                  @AuthenticationPrincipal CustomUserDetails userDetails) {
         if (userDetails == null) {
             throw new UnauthorizedAccessException(); // 인증되지 않은 경우 예외 처리
         }

@@ -17,7 +17,6 @@ import java.nio.file.Paths;
 @RestController
 @RequestMapping("/user/videos")
 public class VideoController {
-//    테스트용 끝나면 지우기 =============================================================================================
 @Value("${video.file.path}")
 private String videoFilePath;
 

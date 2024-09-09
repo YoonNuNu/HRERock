@@ -21,6 +21,7 @@ public class MovieFavorController {
 
     private final MovieFavorService movieFavorService;
 
+    // 회원 확인
     private Long getMemNumFromAuthentication(Authentication authentication) {
         if (authentication.getPrincipal() instanceof UserDetails) {
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -30,6 +31,7 @@ public class MovieFavorController {
         }
     }
 
+    // 찜 활성화
     @PostMapping("/{movieId}/favorites")
     public ResponseEntity<MovieFavorResponseDTO> addMovieFavor(@RequestBody MovieFavorRequestDTO movieFavorRequestDTO, Authentication authentication) {
         Long memNum = getMemNumFromAuthentication(authentication);
@@ -38,6 +40,7 @@ public class MovieFavorController {
         return ResponseEntity.ok(responseDTO);
     }
 
+    // 찜 비활성화
     @DeleteMapping("/{movieId}/favorites")
     public ResponseEntity<MovieFavorResponseDTO> removeFavorite(@PathVariable("movieId") Long movieId, Authentication authentication) {
         Long memNum = getMemNumFromAuthentication(authentication);
@@ -45,6 +48,7 @@ public class MovieFavorController {
         return ResponseEntity.ok(responseDTO);
     }
 
+    // 찜 상태 확인
     @GetMapping("/{movieId}/favorites")
     public ResponseEntity<MovieFavorResponseDTO> getFavoriteStatus(@PathVariable("movieId") Long movieId, Authentication authentication) {
         Long memNum = getMemNumFromAuthentication(authentication);

@@ -117,12 +117,14 @@ const CharmingGraph = ({ movieId, updateTrigger }) => {
 };
 
 // Style components
+//로딩 문구
 const LoadingMessage = styled.div`
     font-size: 20px;
     text-align: center;
     color: #000;
     font-weight: 600;
     padding: 20px;
+    margin-bottom: 20px;
 `;
 
 const ErrorMessage = styled.div`
