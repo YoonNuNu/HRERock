@@ -124,7 +124,7 @@ def fetch_personal_emotion_points_data(mem_num):
 def get_top_personal_actors(mem_num):
     engine = get_database_engine()
     query = """
-    SELECT DISTINCT a.actor_name, p.photo_url 
+    SELECT a.actor_name, p.photo_url, COUNT(*) as appearance_count
       FROM movie_actors ma  
       JOIN reviews r 
         ON r.movie_id = ma.movie_id 
@@ -134,7 +134,10 @@ def get_top_personal_actors(mem_num):
         ON ap.actor_id = a.actor_id 
       JOIN photos p 
         ON p.photo_id = ap.photo_id
-     WHERE r.mem_num = %s;
+     WHERE r.mem_num = %s
+     GROUP BY a.actor_id, a.actor_name, p.photo_url
+     ORDER BY appearance_count DESC
+     LIMIT 5;
     """
 
     personal_actors_df = pd.read_sql_query(query, engine, params=(mem_num,))
@@ -146,7 +149,7 @@ def get_top_personal_actors(mem_num):
 def get_top_personal_directors(mem_num):
     engine = get_database_engine()
     query = """
-    SELECT DISTINCT d.director_name, p.photo_url 
+    SELECT d.director_name, p.photo_url, COUNT(*) as appearance_count 
       FROM movie_directors md  
       JOIN reviews r 
         ON r.movie_id = md.movie_id 
@@ -156,7 +159,10 @@ def get_top_personal_directors(mem_num):
         ON dp.director_id = d.director_id 
       JOIN photos p 
         ON p.photo_id = dp.photo_id
-     WHERE r.mem_num = %s;
+     WHERE r.mem_num = %s
+     GROUP BY d.director_id, d.director_name, p.photo_url
+     ORDER BY appearance_count DESC
+     LIMIT 5;
     """
 
     personal_directors_df = pd.read_sql_query(query, engine, params=(mem_num,))

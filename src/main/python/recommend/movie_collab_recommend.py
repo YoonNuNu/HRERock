@@ -1,90 +1,138 @@
+# import pandas as pd
+# import os
+# import json
+# import numpy as np
+# from sklearn.metrics.pairwise import cosine_similarity
+# from project_util import get_project_root
+#
+# def process_movie_collab_recommend(user_movie_df, all_users_movie_df, mem_num, n=10):
+#     try:
+#         user_movie_df['movie_id'] = user_movie_df['movie_id'].astype(str)
+#         all_users_movie_df['movie_id'] = all_users_movie_df['movie_id'].astype(str)
+#
+#         if user_movie_df.empty or all_users_movie_df.empty:
+#             return []
+#
+#         user_movie_ratings = all_users_movie_df.pivot_table(
+#             values='review_rating',
+#             index='mem_num',
+#             columns='movie_id',
+#             fill_value=0
+#         )
+#         user_movie_ratings.index = user_movie_ratings.index.astype(str)
+#         mem_num = str(mem_num)
+#
+#         if mem_num not in user_movie_ratings.index:
+#             return []
+#
+#         user_similarity = cosine_similarity(user_movie_ratings)
+#         current_user_index = user_movie_ratings.index.get_loc(mem_num)
+#         similar_users = user_similarity[current_user_index].argsort()[::-1][1:11]  # 상위 10명의 유사 사용자
+#
+#         recommendations = pd.Series(dtype=float)
+#         for i in similar_users:
+#             similar_user_ratings = user_movie_ratings.iloc[i]
+#             unwatched_movies = similar_user_ratings[~similar_user_ratings.index.isin(user_movie_df['movie_id'])]
+#
+#             for movie_id in unwatched_movies.index:
+#                 collaborative_score = unwatched_movies[movie_id]
+#                 recommendations.loc[movie_id] = recommendations.get(movie_id, 0) + collaborative_score
+#
+#         recommended_movies = recommendations.nlargest(n).index.tolist()
+#
+#         project_root = get_project_root()
+#         json_dir = os.path.join(project_root, 'src', 'main', 'resources', 'static', 'json')
+#         os.makedirs(json_dir, exist_ok=True)
+#
+#         file_path = os.path.join(json_dir, f'movie_collab_recommend_{mem_num}.json')
+#
+#         with open(file_path, 'w', encoding='utf-8') as f:
+#             json.dump({"recommendations": recommended_movies}, f, ensure_ascii=False, indent=4)
+#
+#         return recommended_movies
+#
+#     except Exception as e:
+#         project_root = get_project_root()
+#         json_dir = os.path.join(project_root, 'src', 'main', 'resources', 'static', 'json')
+#         os.makedirs(json_dir, exist_ok=True)
+#         file_path = os.path.join(json_dir, f'movie_collab_recommend_{mem_num}.json')
+#
+#         with open(file_path, 'w', encoding='utf-8') as f:
+#             json.dump({"recommendations(Exception)": [], "error": str(e)}, f, ensure_ascii=False, indent=4)
+#
+#         return []
+
 import pandas as pd
 import os
 import json
-import logging
 import numpy as np
-import traceback
-from sklearn.preprocessing import OneHotEncoder
 from sklearn.metrics.pairwise import cosine_similarity
 from project_util import get_project_root
 
-# logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(message)s')
+def calculate_similarity(user1, user2):
+    # 공통 영화 찾기
+    common_movies = set(user1['movie_id']) & set(user2['movie_id'])
 
-# 벡터 생성
-def create_movie_feature_vectors(movie_df):
-    # 중복 영화 ID 제거
-    movie_df = movie_df.drop_duplicates(subset=['movie_id'])
+    if not common_movies:
+        return 0  # 공통 영화가 없으면 유사도 0
 
-    # 빈 데이터프레임 생성(고유 영화 ID)
-    feature_df = pd.DataFrame(index=movie_df['movie_id'].unique())
+    # 공통 영화에 대한 평점만 추출
+    user1_ratings = np.array([user1['review_rating'][list(user1['movie_id']).index(movie)] for movie in common_movies])
+    user2_ratings = np.array([user2['review_rating'][list(user2['movie_id']).index(movie)] for movie in common_movies])
 
-    # 장르 원핫 인코더
-    genre_encoder = OneHotEncoder(sparse_output=False)
-    genre_features = genre_encoder.fit_transform(movie_df[['genre_id']])
-    genre_df = pd.DataFrame(genre_features, index=movie_df['movie_id'].values, columns=genre_encoder.get_feature_names_out(['genre_id']))
-    feature_df = pd.concat([feature_df, genre_df], axis=1)
+    rating_sim = cosine_similarity(user1_ratings.reshape(1, -1), user2_ratings.reshape(1, -1))[0][0]
 
-    # 배우 원핫 인코더
-    actor_encoder = OneHotEncoder(sparse_output=False)
-    actor_features = actor_encoder.fit_transform(movie_df[['actor_id']])
-    actor_df = pd.DataFrame(actor_features, index=movie_df['movie_id'].values, columns=actor_encoder.get_feature_names_out(['actor_id']))
-    feature_df = pd.concat([feature_df, actor_df], axis=1)
+    actor_sim = len(set(user1['actor_id']) & set(user2['actor_id'])) / len(set(user1['actor_id']) | set(user2['actor_id']))
+    director_sim = len(set(user1['director_id']) & set(user2['director_id'])) / len(set(user1['director_id']) | set(user2['director_id']))
+    genre_sim = len(set(user1['genre_id']) & set(user2['genre_id'])) / len(set(user1['genre_id']) | set(user2['genre_id']))
 
-    # 감독 원핫 인코더
-    director_encoder = OneHotEncoder(sparse_output=False)
-    director_features = director_encoder.fit_transform(movie_df[['director_id']])
-    director_df = pd.DataFrame(director_features, index=movie_df['movie_id'].values, columns=director_encoder.get_feature_names_out(['director_id']))
-    feature_df = pd.concat([feature_df, director_df], axis=1)
+    return (rating_sim + actor_sim + director_sim + genre_sim) / 4
 
-    return feature_df
-
-# 영화정보 기반 협업 필터링
 def process_movie_collab_recommend(user_movie_df, all_users_movie_df, mem_num, n=10):
     try:
-        # logging.info(f"영화 협업 필터링 시작: 사용자 {mem_num}")
-        # 데이터 타입 변환
-        user_movie_df['movie_id'] = user_movie_df['movie_id'].astype(np.int64)
-        all_users_movie_df['movie_id'] = all_users_movie_df['movie_id'].astype(np.int64)
+        if user_movie_df.empty or all_users_movie_df.empty:
+            return []
 
-        recommended_movies = []
+        target_user = user_movie_df.groupby('mem_num').agg({
+            'movie_id': list,
+            'actor_id': set,
+            'director_id': set,
+            'genre_id': set,
+            'review_rating': list
+        }).loc[mem_num]
 
-        if not user_movie_df.empty and not all_users_movie_df.empty:
-            # 영화 특성 벡터 생성
-            all_movies_features = create_movie_feature_vectors(all_users_movie_df)
+        user_similarities = []
+        for other_mem_num, other_user in all_users_movie_df.groupby('mem_num'):
+            if other_mem_num == mem_num:
+                continue
+            other_user_agg = other_user.agg({
+                'movie_id': list,
+                'actor_id': set,
+                'director_id': set,
+                'genre_id': set,
+                'review_rating': list
+            })
+            similarity = calculate_similarity(target_user, other_user_agg)
+            user_similarities.append((other_mem_num, similarity))
 
-            # 사용자-영화 평점 피벗 테이블 생성
-            user_movie_ratings = all_users_movie_df.pivot_table(
-                values='review_rating',
-                index='mem_num',
-                columns='movie_id',
-                fill_value=0
-            )
-            user_movie_ratings.index = user_movie_ratings.index.astype(str)
+        user_similarities.sort(key=lambda x: x[1], reverse=True)
+        similar_users = user_similarities[:10]  # 상위 10명의 유사 사용자
 
-            if mem_num in user_movie_ratings.index:
-                # 사용자 유사도 계산
-                user_similarity = cosine_similarity(user_movie_ratings)
+        recommendations = {}
+        for similar_user, similarity in similar_users:
+            similar_user_movies = set(all_users_movie_df[all_users_movie_df['mem_num'] == similar_user]['movie_id'])
+            unwatched_movies = similar_user_movies - set(user_movie_df['movie_id'])
 
-                current_user_index = user_movie_ratings.index.get_loc(mem_num)
-                similar_users = user_similarity[current_user_index].argsort()[::-1][1:11]  # 상위 10명의 유사 사용자
-                # logging.info(f"유사 사용자 수: {len(similar_users)}")
+            for movie_id in unwatched_movies:
+                if movie_id not in recommendations:
+                    recommendations[movie_id] = 0
+                movie_rating = all_users_movie_df[(all_users_movie_df['mem_num'] == similar_user) &
+                                                  (all_users_movie_df['movie_id'] == movie_id)]['review_rating'].values[0]
+                recommendations[movie_id] += similarity * movie_rating
 
-                # 추천 초기화
-                recommendations = pd.Series(dtype=float)
-                for i in similar_users:
-                    similar_user_ratings = user_movie_ratings.iloc[i]
-                    unwatched_movies = similar_user_ratings[~similar_user_ratings.index.isin(user_movie_df['movie_id'].astype(str))]
+        recommended_movies = sorted(recommendations.items(), key=lambda x: x[1], reverse=True)[:n]
+        recommended_movie_ids = [movie[0] for movie in recommended_movies]
 
-                    # 영화 특성 기반 점수 추가
-                    for movie_id in unwatched_movies.index:
-                        movie_features = all_movies_features.loc[movie_id]
-                        score = movie_features.dot(user_movie_ratings.loc[mem_num])
-                        recommendations.loc[movie_id] = score
-
-                # 상위 n개 영화 선택
-                recommended_movies = recommendations.nlargest(n).index.tolist()
-
-        # 결과를 JSON 파일로 저장
         project_root = get_project_root()
         json_dir = os.path.join(project_root, 'src', 'main', 'resources', 'static', 'json')
         os.makedirs(json_dir, exist_ok=True)
@@ -92,13 +140,13 @@ def process_movie_collab_recommend(user_movie_df, all_users_movie_df, mem_num, n
         file_path = os.path.join(json_dir, f'movie_collab_recommend_{mem_num}.json')
 
         with open(file_path, 'w', encoding='utf-8') as f:
-            json.dump({"recommendations": recommended_movies}, f, ensure_ascii=False, indent=4)
+            json.dump({"recommendations": recommended_movie_ids}, f, ensure_ascii=False, indent=4)
 
-        # logging.info(f"영화 협업 필터링 완료: 사용자 {mem_num}")
-        return recommended_movies
+        return recommended_movie_ids
 
     except Exception as e:
-        # 오류 발생 시 빈 추천 목록과 오류 메시지 저장
+        # import traceback
+        # traceback.print_exc()
         project_root = get_project_root()
         json_dir = os.path.join(project_root, 'src', 'main', 'resources', 'static', 'json')
         os.makedirs(json_dir, exist_ok=True)
@@ -107,5 +155,4 @@ def process_movie_collab_recommend(user_movie_df, all_users_movie_df, mem_num, n
         with open(file_path, 'w', encoding='utf-8') as f:
             json.dump({"recommendations(Exception)": [], "error": str(e)}, f, ensure_ascii=False, indent=4)
 
-        # logging.error(f"영화 협업 필터링 오류: 사용자 {mem_num}, {str(e)}")
         return []

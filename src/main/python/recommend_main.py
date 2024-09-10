@@ -19,7 +19,7 @@ from data.recommend_processor import (
 
 def generate_recommendations(mem_num, n=10):
     try:
-        logging.info(f"Generating recommendations for user {mem_num}")
+        # logging.info(f"Generating recommendations for user {mem_num}")
 
         # 데이터 불러오기
         movie_points_ratios_df = get_movies_points_ratios_data()
@@ -29,8 +29,8 @@ def generate_recommendations(mem_num, n=10):
         all_users_movie_df = get_all_user_movie_data(mem_num)
         # user_points_data = get_user_points_data(mem_num)
 
-        logging.info(f"user_points_ratios_df: {user_points_ratios_df}")
-        logging.info(f"all_user_points_ratios_df: {all_user_points_ratios_df}")
+        # logging.info(f"user_points_ratios_df: {user_points_ratios_df}")
+        # logging.info(f"all_user_points_ratios_df: {all_user_points_ratios_df}")
 
 
         # 추천 ID 생성

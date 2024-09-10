@@ -40,26 +40,6 @@ def get_all_user_movie_data(mem_num):
     """
     return execute_query(query, (mem_num,))
 
-# def get_user_points_data(mem_num):
-#     query = """
-#     SELECT ap.*, ep.*
-#       FROM reviews r
-#       JOIN review_attraction_points ap ON ap.review_id = r.review_id
-#       JOIN review_emotion_points ep ON ep.review_id = r.review_id
-#      WHERE r.mem_num = %s;
-#     """
-#     return execute_query(query, (mem_num,))
-#
-# def get_all_user_points_data(mem_num):
-#     query = """
-#     SELECT ap.*, ep.*
-#       FROM reviews r
-#       JOIN review_attraction_points ap ON ap.review_id = r.review_id
-#       JOIN review_emotion_points ep ON ep.review_id = r.review_id
-#      WHERE r.mem_num != %s;
-#     """
-#     return execute_query(query, (mem_num,))
-
 def get_user_points_ratios_data(mem_num):
     query = """
     SELECT r.mem_num, r.movie_id,
