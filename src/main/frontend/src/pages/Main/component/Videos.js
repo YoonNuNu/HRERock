@@ -94,7 +94,13 @@ const Videos = () => {
                         <SwiperSlide key={movie.movieId}>
                             <VideoTextWrapper>
                                 <VideoTitle>{movie.movieTitle}</VideoTitle>
-                                <VideoContext>{movie.movieDescription || '줄거리 정보가 없습니다.'}</VideoContext>
+                                <VideoContext>
+                                    {movie.movieDescription
+                                        ? movie.movieDescription.length > 300
+                                            ? `${movie.movieDescription.substring(0, 300)}...`
+                                            : movie.movieDescription
+                                        : '줄거리 정보가 없습니다.'}
+                                </VideoContext>
                                 <VideoBtn onClick={() => navigate(`/user/moviePlay/${movie.movieId}`)}>
                                     재생
                                 </VideoBtn>

@@ -44,7 +44,7 @@ const NoticeList = () => {
             const token = localStorage.getItem('accessToken');
             if (!token) {
                 alert('로그인이 필요한 페이지입니다.');
-                navigate("/login");
+                navigate("/Login");
                 // return;
             }
             else {
@@ -55,7 +55,7 @@ const NoticeList = () => {
         catch (error) {
             console.error('PostList user info error:', error);
             alert("오류가 발생했습니다. 다시 로그인해주세요")
-            navigate('/login');
+            navigate('/Login');
         }
         finally {
             setIsLoading(false);
@@ -85,7 +85,7 @@ const NoticeList = () => {
         catch (error) {
             console.error('Error fetching board:', error);
             alert('공지사항 목록을 불러오는 중 오류가 발생했습니다.')
-            navigate("/login");
+            navigate("/Login");
         }
     };
 
@@ -124,7 +124,7 @@ const NoticeList = () => {
 
     // 엔터키 기능
     const handleEnterKey = (e) => {
-        if(e.key === 'Enter'){
+        if (e.key === 'Enter') {
             searchBoards(1);
         }
     }
@@ -221,7 +221,7 @@ const NoticeList = () => {
     }, [hasPermission]);
 
     const noticeNumber = (index) => {
-        return(currentPage - 1 ) * 10 + index + 1;
+        return (currentPage - 1) * 10 + index + 1;
     }
 
 
@@ -296,12 +296,12 @@ const NoticeList = () => {
             <Header>
                 공지사항
                 {/* 글쓰기 버튼 */}
-                {role === 'ADMIN' && (
+                {/* {role === 'ADMIN' && (
                     <>
                         <button
                             className="botom_write"
                             type="button"
-                            onClick={() => navigate(`/admin/notice/write`)}
+                            onClick={() => navigate(`/admin/boardList/write`)}
                         >
                             <NoticeWriteButton>글쓰기</NoticeWriteButton>
                         </button>
@@ -313,57 +313,37 @@ const NoticeList = () => {
                             <NoticeWriteButton>삭제</NoticeWriteButton>
                         </button>
                     </>
-                )}
+                )} */}
             </Header>
 
             <div className="step-bar">
                 <span className="gradation-blue"></span>
             </div>
 
-            {role === 'ADMIN' ? (
-                    <CommonTable headersName={[
-                        <input
-                            type='checkbox'
-                            checked={checkboxSelectAll}
-                            onChange={handleAllcheck}
-                        />,
-                        '글번호', '제목', '등록일', '조회수']}>
-                        {boardList.length > 0 ? boardList.map((item, index) => (
-                            <CommonTableRow key={index}>
-                                <CommonTableColumn>
-                                    <input
-                                        type='checkbox'
-                                        checked={selectCheckbox[index] || false}
-                                        onChange={() => handleCheckbox(index)}
-                                        name='selectedBoards'
-                                        value={item.boardId}
-                                    />
-                                </CommonTableColumn>
-                                <CommonTableColumn>{noticeNumber(item.boardId)}</CommonTableColumn>
-                                <CommonTableColumn>
-                                    <Link to={`/user/notice/${item.boardId}`}>{item.boardTitle}</Link>
-                                </CommonTableColumn>
-                                <CommonTableColumn>{item.modifyDate}</CommonTableColumn>
-                                <CommonTableColumn>{item.boardViewCount}</CommonTableColumn>
-                            </CommonTableRow>
-                        )) : '공지글이 없습니다'}
-                    </CommonTable>
-                ) :
-                (
-                    <CommonTable headersName={[
-                        '글번호', '제목', '등록일', '조회수']}>
-                        {boardList.length > 0 ? boardList.map((item, index) => (
-                            <CommonTableRow key={index}>
-                                <CommonTableColumn>{noticeNumber(index)}</CommonTableColumn>
-                                <CommonTableColumn>
-                                    <Link to={`/user/notice/${item.boardId}`}>{item.boardTitle}</Link>
-                                </CommonTableColumn>
-                                <CommonTableColumn>{item.modifyDate}</CommonTableColumn>
-                                <CommonTableColumn>{item.boardViewCount}</CommonTableColumn>
-                            </CommonTableRow>
-                        )) : '공지글이 없습니다'}
-                    </CommonTable>
+
+            <CommonTable headersName={[
+                '글번호', '제목', '등록일', '조회수']}>
+                {boardList.length > 0 ? boardList.map((item, index) => (
+                    <CommonTableRow key={index}>
+                        <CommonTableColumn>{noticeNumber(index)}</CommonTableColumn>
+                        <CommonTableColumn>
+                            <Link to={`/user/boardList/${item.boardId}`}>{item.boardTitle}</Link>
+                        </CommonTableColumn>
+                        <CommonTableColumn>{item.modifyDate}</CommonTableColumn>
+                        <CommonTableColumn>{item.boardViewCount}</CommonTableColumn>
+                    </CommonTableRow>
+                )) :(
+                    <CommonTableRow >
+                        <CommonTableColumn></CommonTableColumn>
+                        <CommonTableColumn>
+                            <div>공지글이 없습니다.</div>
+                        </CommonTableColumn>
+                        <CommonTableColumn></CommonTableColumn>
+                        <CommonTableColumn></CommonTableColumn>
+                    </CommonTableRow>
                 )}
+            </CommonTable>
+
 
 
             {/* 페이지네이션 컴포넌트 */}
@@ -436,8 +416,7 @@ const Header = styled.div`
     color: rgb(51, 61, 75);
     font-size: 36px;
     font-weight: 800;
-    margin-bottom: 48px;
-    padding-top: 74px;
+    padding-top: 48px;
     text-align: left;
     width: 1044px;
     margin: 0 auto;
@@ -495,6 +474,7 @@ const NoticeWriteButton = styled.div`
 
 const Wrap = styled.div`
     width: 100%;
+    min-height: 670px;
     //height: 100vh;
     position: relative;
     margin: 0 auto;

@@ -9,7 +9,7 @@ import axios from 'axios';
 
 //MovieReview -----------------------------
 const MovieReview = ({ movieId, movieDetail, memRole, correspondMemName, correspondMemNum }) => {
-
+    console.log("MovieReview movieId:", movieId);
     // 변수 설정
     const [totalReviews, setTotalReviews] = useState(0);
     const [averageRating, setAverageRating] = useState(0);
@@ -48,15 +48,18 @@ const MovieReview = ({ movieId, movieDetail, memRole, correspondMemName, corresp
     // movieId, sortBy에 따라 랜더링
     useEffect(() => {
         const token = localStorage.getItem('accessToken');
+        const validMovieId = movieId;
+        console.log("useEffect validMovieId:", validMovieId);
 
         if (token) {
-            const validMovieId = typeof movieId === 'object' && movieId.movieId ? movieId.movieId : movieId;
 
             if (validMovieId) {
-                fetchReviews(token, 1).then(() => {
-                    console.log("useEffect EditingReviewId after fetch:", editingReviewId);
-                });
-                fetchInitialLikeStatuses(token);
+                fetchReviews(token, 1)
+                    .then(() => {
+                        console.log("useEffect EditingReviewId after fetch:", editingReviewId);
+                        return fetchInitialLikeStatuses(token);
+                    });
+
 
                 console.log("useEffect movieId:", movieId.movieId, "Type of movieId:", typeof movieId.movieId);
             } else {
@@ -119,8 +122,8 @@ const MovieReview = ({ movieId, movieDetail, memRole, correspondMemName, corresp
     // 매력 포인트 label
     const getAttractionPointLabel = (key) => {
         const labels = {
-            directingPoint: "감독연출",
-            actingPoint: "배우연기",
+            directingPoint: "감독 연출",
+            actingPoint: "배우 연기",
             visualPoint: "영상미",
             storyPoint: "스토리",
             ostPoint: "OST"
@@ -207,6 +210,7 @@ const MovieReview = ({ movieId, movieDetail, memRole, correspondMemName, corresp
             const response = await axios.delete(`/user/movies/detail/${validMovieId}/reviews/${reviewId}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
+
             const { currentPage: newPage, totalReviews: newTotalReviews } = response.data;
 
             //즉시 상태 업데이트
@@ -222,13 +226,19 @@ const MovieReview = ({ movieId, movieDetail, memRole, correspondMemName, corresp
                 // 현재 페이지의 마지막 리뷰를 삭제한 경우, 이전 페이지로 이동
                 pageToFetch = currentPage - 1;
             } else {
-                pageToFetch = currentPage; // 그 외의 경우, 현재 페이지 유지
+                // 그 외의 경우, 현재 페이지 유지
+                pageToFetch = currentPage;
             }
+
             setCurrentPage(pageToFetch);
             await fetchReviews(token, pageToFetch);
+            // setTotalReviews(newTotalReviews);
             setEditingReviewId(null); // 삭제 후 편집 ID 초기화
+
             alert('리뷰가 삭제되었습니다.');
+
             setGraphUpdateTrigger(prev => prev + 1);
+
         } catch (error) {
             console.error('리뷰 삭제 중 오류 발생:', error);
             alert('리뷰 삭제에 실패했습니다. 다시 시도해주세요.');
@@ -238,17 +248,20 @@ const MovieReview = ({ movieId, movieDetail, memRole, correspondMemName, corresp
 
     // 리뷰 좋아요 상태 확인
     const fetchInitialLikeStatuses = async (token) => {
-        const validMovieId = movieId.movieId;
+        const validMovieId = movieId; // movieId가 올바른지 확인
+
+        if (!validMovieId) {
+            console.error("유효한 movieId가 없습니다:", validMovieId);
+            return;
+        }
 
         try {
             const response = await axios.get(`/user/movies/detail/${validMovieId}/reviews/likes`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
-            const likeStatusArray = response.data; // [{reviewId, memNum, likeCount, like}]
+            const likeStatusArray = response.data;
             const initialLikes = {};
-            console.log("fetchInitialLikeStatuses Like Status:", response.data);
 
-            // 배열을 순회하며 상태를 초기화합니다.
             likeStatusArray.forEach(status => {
                 initialLikes[status.reviewId] = {
                     isLike: status.like,
@@ -263,17 +276,20 @@ const MovieReview = ({ movieId, movieDetail, memRole, correspondMemName, corresp
         }
     };
 
+
     // 리뷰 좋아요 버튼
     const toggleReviewLike = async (reviewId) => {
-        const validMovieId = movieId.movieId;
+        const validMovieId = movieId;
         const token = localStorage.getItem('accessToken');
         if (!token || !reviewId) {
             console.error('AccessToken 또는 ReviewId가 없습니다');
             return;
         }
+
         try {
             const currentLikeStatus = reviewLikes[reviewId] || { isLike: false, likeCount: 0 };
             const url = `/user/movies/detail/${validMovieId}/reviews/${reviewId}/likes`;
+
             let response;
             if (currentLikeStatus.isLike) {
                 response = await axios.delete(url, {
@@ -285,10 +301,12 @@ const MovieReview = ({ movieId, movieDetail, memRole, correspondMemName, corresp
                     headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
                 });
             }
+
             const newLikeStatus = {
                 isLike: response.data.like,
                 likeCount: response.data.likeCount
             };
+
             setReviewLikes(prev => ({
                 ...prev,
                 [reviewId]: newLikeStatus
@@ -635,6 +653,7 @@ const ChartWrap = styled.div`
     //디자인
     //background-color: rgba(255, 255, 255, 0.1);
     background-color:#fff;
+
 `;
 
 //리뷰 박스
@@ -1012,6 +1031,8 @@ const ReviewPagination = styled.div`
             font-weight: 800;
         }
     }
+
 `
+
 
 export default MovieReview;

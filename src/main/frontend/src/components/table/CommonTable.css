@@ -29,5 +29,23 @@
 
 .common-table-column {
     /*padding: 10px 5px;*/
-    padding: 20px 20px;
+    padding: 30px 20px;
+    vertical-align: middle;
+
+}
+.Notice_Input_Css{
+    width: 50px;
+}
+
+.Noitec_Number_Css{
+    width: 70px;
+}
+.Noitec_Title_Css{
+    width:900px;
+}
+.Noitec_Date_Css{
+    width: 100px;
+}
+.Noitec_viewCount_Css{
+    width: 70px;
 }

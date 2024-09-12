@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import '../Admin/css/Modal.css';
 
@@ -8,6 +8,16 @@ function AddActorModal({ isOpen, onClose, onAdd }) {
     const [name, setName] = useState('');
     const [birthDate, setBirthDate] = useState('');
     const [photoUrls, setPhotoUrls] = useState(['', '', '']);
+
+
+    useEffect(() => {
+        if (isOpen) {
+            // 모달이 열릴 때 입력 필드 초기화
+            setName('');
+            setBirthDate('');
+            setPhotoUrls(['', '', '']);
+        }
+    }, [isOpen]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

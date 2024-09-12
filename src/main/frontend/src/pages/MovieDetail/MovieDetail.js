@@ -61,22 +61,11 @@ const MovieDetail = () => {
                 movieDetail={movieDetail}
             />)
         },
-        // {name: '추천', content: ""},
-        // {name: '추천', content: <MovieReview />},
     ];
-
-    const handleScroll = () => {
-        const { scrollY } = window;
-        scrollY > 200 && setToggleBtn(!toggleBtn);
-    };
 
     const goToTop = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         setToggleBtn(false);
-    };
-
-    const updateScroll = () => {
-        setScrollPosition(window.scrollY || document.documentElement.scrollTop);
     };
 
     // 에러 발생시 확인
@@ -362,7 +351,11 @@ const MovieDetail = () => {
                                                 <DesContent>
                                                     {/*줄거리-연습용*/}
                                                     <MovieDescription>
-                                                        {movieDetail.movieDescription}
+                                                        {movieDetail.movieDescription
+                                                            ? movieDetail.movieDescription.length > 400
+                                                                ? `${movieDetail.movieDescription.substring(0, 400)}...`
+                                                                : movieDetail.movieDescription
+                                                            : '줄거리 정보가 없습니다.'}
                                                     </MovieDescription>
 
                                                 </DesContent>
@@ -565,7 +558,7 @@ const DesBox = styled.div`
     float: left;
     width: 580px;
     margin-top: 20px;
-    margin-left: 10px;
+    //margin-left: 10px;
     margin-right: 10px;
 
 

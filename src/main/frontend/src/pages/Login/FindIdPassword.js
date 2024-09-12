@@ -22,33 +22,45 @@ const FindIdPassword = () => {
 
 
     //html -----------------------------------
-    return (<>
-            <WrapLogin>
-                <div className="step-bar">
-                    <span className="gradation-blue"></span>
-                </div>
-
-                <TabMenu>
-                    {menuArr.map((tap, index) => {
-                        return (<div
-                            key={index}
-                            className={currentTab === index ? 'submenu focused' : 'submenu'}
-                            onClick={() => selectMenuHandler(index)}
-                        >
-                            {tap.name}
-                        </div>);
-                    })}
-                    <div>
-                        <div>{menuArr[currentTab].content}</div>
+    return (
+        <>
+            <Wrap>
+                <WrapLogin>
+                    <div className="step-bar">
+                        <span className="gradation-blue"></span>
                     </div>
-                </TabMenu>
-            </WrapLogin>
+
+                    <TabMenu>
+                        {menuArr.map((tap, index) => {
+                            return (<div
+                                key={index}
+                                className={currentTab === index ? 'submenu focused' : 'submenu'}
+                                onClick={() => selectMenuHandler(index)}
+                            >
+                                {tap.name}
+                            </div>);
+                        })}
+                        <div>
+                            <div>{menuArr[currentTab].content}</div>
+                        </div>
+                    </TabMenu>
+                </WrapLogin>
+            </Wrap>
         </>
     );
 }
 export default FindIdPassword;
 
-
+const Wrap = styled.div`
+    padding: 1px;
+    min-height: 100%;
+    height: 735px;
+    background-image:url('./images/bg_3.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+`
 
 
 const WrapLogin = styled.div`
@@ -57,7 +69,7 @@ const WrapLogin = styled.div`
     height: 450px;
     margin-bottom: 120px;
     position: relative;
-    margin: 80px auto;
+    margin: 147px auto;
     //min-height: 100%;
     padding: 40px 40px;
     background:  rgba(11, 11, 13, 0.8);

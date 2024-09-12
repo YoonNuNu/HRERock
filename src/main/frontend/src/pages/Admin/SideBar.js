@@ -15,8 +15,6 @@ import gear from "./images/gear.svg";
 // SideBar
 const SideBar = () => {
 
-    const pathName = useLocation().pathname;
-
     const activeStyle = {
         color: '#1351f9', fontWeight: 700,
     };
@@ -42,7 +40,7 @@ const SideBar = () => {
 
                 <Menu>
                     <Img src={pencil}></Img>
-                    <NavLink className="a" style={({isActive}) => (isActive ? activeStyle : {})} to='/admin/notice'>
+                    <NavLink className="a" style={({isActive}) => (isActive ? activeStyle : {})} to='/admin/boardList'>
                         Notice
                     </NavLink>
                 </Menu>
@@ -63,7 +61,7 @@ const SideBar = () => {
 
                 <Menu>
                     <Img src={gear}></Img>
-                    <Link className="a" to='/login'>Logout</Link>
+                    <Link className="a" to='/Login'>Logout</Link>
                 </Menu>
             </SideWrap>
         </MenuWrap>
@@ -86,11 +84,13 @@ const Img = styled.img`
 const MenuWrap = styled.div`
     float: left;
     width: 240px;
-    // height: 100vh;
     height: 100%;
+    // height: 100vh;
+    // height: 1200px;
     //position: fixed;
     //margin-top: 180px;
     z-index: 999999999;
+    // border: 1px solid red;
 `;
 
 
@@ -133,7 +133,9 @@ const Side = styled.div`
 const SideWrap = styled.div`
     width: 240px;
     // height: 100vh;
-    height: 100%;
+    // height: 100%;
+    height: 1200px;
+
     padding-top: 120px;
     padding-bottom: 40px;
     border-top-left-radius: 20px;

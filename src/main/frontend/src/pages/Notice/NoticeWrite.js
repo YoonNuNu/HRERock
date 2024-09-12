@@ -4,7 +4,11 @@ import axios from 'axios';
 import styled from "styled-components";
 import notice from "./images/notice_write.png";
 import ChatBot from "../../components/ChatBot/ChatBot";
+import SideBar from "../Admin/SideBar";
+import home from "../Admin/images/home.svg";
 
+
+// 공지글 쓰기
 function NoticeWrite() {
     const [boardTitle, setBoardTitle] = useState('');
     const [boardContent, setBoardContent] = useState('');
@@ -30,7 +34,7 @@ function NoticeWrite() {
         const token = localStorage.getItem('accessToken');
         if(!token){
             alert("로그인이 필요한 페이지입니다. 로그인부터 진행해주세요");
-            navigate("/login")
+            navigate("/Login")
         }
     }, [navigate]);
 
@@ -53,6 +57,7 @@ function NoticeWrite() {
         setFiles(newFiles);
     };
 
+    //handleSubmit
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -81,20 +86,28 @@ function NoticeWrite() {
             }
 
             alert('게시글이 성공적으로 작성되었습니다.');
-            navigate("/user/Notice");
+            navigate("/admin/boardList");
         } catch (error) {
             console.error('Error:', error.response?.data || error.message);
             alert('게시글 작성 중 오류가 발생했습니다. 다시 시도해 주세요.');
         }
     };
 
+
     const uploadFiles = async (boardId, files) => {
         const formData = new FormData();
         files.forEach((file) => {
             if (file) {
                 formData.append('files', file);
+                console.log('첨부 파일:', file.name);  // 파일 이름 출력
             }
         });
+
+        // formData의 모든 항목 출력
+        for (let [key, value] of formData.entries()) {
+            console.log(`Key: ${key}, Value:`, value);
+        }
+
 
         try {
             await axios.post(`/admin/boardUpload/${boardId}`, formData, {
@@ -103,20 +116,35 @@ function NoticeWrite() {
                 },
             });
             console.log('파일 업로드 성공');
-            navigate('/user/Notice');
+            navigate('/admin/boardList');
         } catch (error) {
             console.error('파일 업로드 실패:', error.response ? error.response.data : error.message);
             alert('파일 업로드에 실패했습니다. 게시글은 작성되었습니다.');
-            navigate('/user/Notice');
+            navigate('/admin/boardList');
         }
     };
 
     return (
         <Wrap>
+
+            {/* sidebar */}
+            <SideBar />
+            {/*3.상단 브레드스크럼 메뉴바*/}
+            {/*3-1.상단 브레드스크럼 메뉴바*/}
+            <div className="admin_head">
+                <img src={home}></img>
+                <h2>관리자페이지</h2>
+            </div>
+            {/*3-2.상단 브레드스크럼 메뉴바*/}
+            <div className="admin_movie_head">
+                <span>Admin&nbsp;&nbsp;{">"}&nbsp;&nbsp;공지 사항&nbsp;&nbsp;</span>
+                {/*<span className="s">></span>*/}
+            </div>
+
             <FromNoticeWrap>
                 <Header className="name">
-                    <Link to={`/user/notice/`}>
-                        게시판
+                    <Link to={`/user/boardList/`}>
+                        공지사항
                     </Link>
                 </Header>
 
@@ -184,19 +212,25 @@ function NoticeWrite() {
 // 스타일 컴포넌트
 const Wrap = styled.div`
     width: 100%;
+    // height: 100%;
+    height: 1200px;
+
     position: relative;
     margin: 0 auto;
-    background: #fff;
-    display: inline-block;
+    background: #eee;
 `;
 
 const FromNoticeWrap = styled.div`
     width: 1024px;
-    position: relative;
+    heigh: 1000px;
+    // position: relative;
     margin: 0 auto;
-    background: #fff;
+    // background: #fff;
     margin-bottom: 48px;
-    padding-top: 40px;
+    // padding-top: 10px;
+    // border: 1px solid red;
+    padding-left: 100px;
+
 `;
 
 const Header = styled.div`
@@ -207,6 +241,11 @@ const Header = styled.div`
     font-size: 36px;
     font-weight: 800;
     text-align: left;
+    padding-left: 90px;
+    
+    a {
+        color: black;
+    }
 `;
 
 const InputTextSizeWTypeL = styled.div`
@@ -406,30 +445,32 @@ const FormBlockFiles = styled.div`
 
 const FormWrite = styled.form`
     width: 1024px;
+    height: 100%;
     display: flex;
     flex-direction: column;
 `;
 // 첨부파일 파일 수정, 삭제 버튼
 const NoticeViewFile = styled.div`
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
-margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
 
-div{
-    width: 1024px;
-    margin-top: 10px;    
+    div{
+        width: 1024px;
+        margin-top: 10px;
     }
-    
-    `
+
+`
 
 // 수정, 삭제, 돌아가기 버튼
 const NoticeViewBtn = styled.div`
     margin-top: 10px;
     margin-bottom: 10px;
 
-    display: flex;    
+    display: flex;
     justify-content: center;
-    `
+`
 export default NoticeWrite;
+

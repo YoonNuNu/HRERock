@@ -40,7 +40,7 @@ const AdminMovieList = () => {
         const token = localStorage.getItem('accessToken');
         if (!token) {
             alert("로그인이 필요합니다.");
-            navigate('/login');
+            navigate('/Login');
             return;
         }
 
@@ -58,7 +58,7 @@ const AdminMovieList = () => {
         } catch (error) {
             console.error('Error fetching user info:', error);
             alert("오류가 발생했습니다. 다시 로그인해주세요.");
-            navigate('/login');
+            navigate('/Login');
         } finally {
             setIsLoading(false);
         }
@@ -111,7 +111,7 @@ const AdminMovieList = () => {
     };
 
     const handleAddMovie = () => navigate("/admin/MovieUpload");
-    const handleEditMovie = (movieId) => navigate(`/admin/movie/${movieId}/modify`);
+    const handleEditMovie = (movieId) => navigate(`/admin/Movie/${movieId}/modify`);
 
     const handleCheckboxChange = (movie) => {
         setSelectedMovies(prev =>
@@ -167,25 +167,25 @@ const AdminMovieList = () => {
             try {
                 const params = new URLSearchParams();
 
-                if (selectedPosters.length > 0) {
-                    selectedPosters.forEach(id => params.append('posterIds', id));
-                }
-                if (selectedTrailers.length > 0) {
-                    selectedTrailers.forEach(id => params.append('trailerIds', id));
-                }
-                if (selectedReviews.length > 0) {
-                    selectedReviews.forEach(id => params.append('reviewIds', id));
-                }
-                if (selectedWatchHistories.length > 0) {
-                    selectedWatchHistories.forEach(id => params.append('watchIds', id));
-                }
-                if (selectedFavorites.length > 0) {
-                    selectedFavorites.forEach(id => params.append('favorIds', id));
+                // 모든 ID 배열에 대해 처리
+                const idArrays = {
+                    posterIds: selectedPosters,
+                    trailerIds: selectedTrailers,
+                    reviewIds: selectedReviews,
+                    watchIds: selectedWatchHistories,
+                    favorIds: selectedFavorites
+                };
+
+                for (const [key, array] of Object.entries(idArrays)) {
+                    if (array.length > 0) {
+                        array.forEach(id => params.append(key, id));
+                    } else {
+                        // 빈 배열인 경우 빈 문자열로 추가
+                        params.append(key, '');
+                    }
                 }
 
-                const url = params.toString()
-                    ? `/admin/movie/delete?${params.toString()}`
-                    : '/admin/movie/delete';
+                const url = `/admin/movie/delete?${params.toString()}`;
 
                 await axios.delete(url, {
                     data: selectedMovies
@@ -221,94 +221,103 @@ const AdminMovieList = () => {
     }
 
     return (
-        <div className="wrap">
+        <Wrap>
             <SideBar />
             <div className="admin_head">
                 <img src={home} alt="Home" />
                 <h2>관리자페이지</h2>
             </div>
             <div className="admin_movie_head">
-                <span>Admin > 영화 관리</span>
+                <span>Admin&nbsp;&nbsp;{">"}&nbsp;&nbsp;영화 관리&nbsp;&nbsp;</span>
             </div>
-            <div className="wrap_Boby">
+            <div className="wrap_Body">
                 <div className="list_div">
-                    <FormBox onSubmit={handleSearch}>
-                        <SearchInput
-                            type="text"
-                            placeholder="제목,장르,감독을 입력하세요."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            onKeyPress={handleKeyPress}
-                        />
-                        <Button type="submit">검색</Button>
-                    </FormBox>
+                    <WriteSection>
 
-                    <Header>
-                        <h2>영화 관리</h2>
-                        <button className="botom_write" onClick={handleAddMovie}>
-                            <a>등록</a>
-                        </button>
-                        <button className="botom_delete" onClick={handleDeleteMovie}>
-                            <a>삭제</a>
-                        </button>
-                    </Header>
 
-                    <CommonTable headersName={[
-                        '',
-                        <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={toggleSort}>
-                            영화 ID
-                            <button style={{ marginLeft: '5px', border: 'none', background: 'none', cursor: 'pointer' }}>
-                                {sortOrder === 'asc' ? '▲' : '▼'}
+                        <FormBox onSubmit={handleSearch}>
+                            <SearchInput
+                                type="text"
+                                placeholder="제목,장르,감독을 입력하세요."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                onKeyPress={handleKeyPress}
+                            />
+                            <Button type="submit">검색</Button>
+                        </FormBox>
+                    </WriteSection>
+                    <div className="list_div">
+                        <Header>
+                            <h2>영화 관리</h2>
+                        </Header>
+                        <MovieAddDeleteButtonDiv>
+
+                            <button className="botom_write" onClick={handleAddMovie}>
+                                <a>등록</a>
                             </button>
-                        </div>,
-                        '영화 이름',
-                        '영화 장르',
-                        '영화 감독',
-                        '영화 시간',
-                        ''
-                    ]}>
-                        {movies.map((movie, index) => (
-                            <CommonTableRow key={index}>
-                                <CommonTableColumn>
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedMovies.includes(movie.movieId)}
-                                        onChange={() => handleCheckboxChange(movie)}
-                                    />
-                                    <input type="hidden" name="posterIds"
-                                           value={JSON.stringify(movie.posterIds || [])}/>
-                                    <input type="hidden" name="trailerIds"
-                                           value={JSON.stringify(movie.trailerIds || [])}/>
-                                    <input type="hidden" name="reviewIds"
-                                           value={JSON.stringify(movie.reviewIds || [])}/>
-                                    <input type="hidden" name="watchIds" value={JSON.stringify(movie.watchIds || [])}/>
-                                    <input type="hidden" name="favorIds" value={JSON.stringify(movie.favorIds || [])}/>
-                                </CommonTableColumn>
-                                <CommonTableColumn>{movie.movieId}</CommonTableColumn>
-                                <CommonTableColumn>{movie.movieTitle}</CommonTableColumn>
-                                <CommonTableColumn>{movie.genres.join(', ')}</CommonTableColumn>
-                                <CommonTableColumn>{movie.directors.join(', ')}</CommonTableColumn>
-                                <CommonTableColumn>{movie.runtime}</CommonTableColumn>
-                                <CommonTableColumn>
-                                    <EditButton onClick={() => handleEditMovie(movie.movieId)}>수정</EditButton>
-                                </CommonTableColumn>
-                            </CommonTableRow>
-                        ))}
-                    </CommonTable>
+                            <button className="botom_delete" onClick={handleDeleteMovie}>
+                                <a>삭제</a>
+                            </button>
+                        </MovieAddDeleteButtonDiv>
 
-                    <Pagination
-                        activePage={currentPage}
-                        itemsCountPerPage={5}
-                        totalItemsCount={totalItems}
-                        pageRangeDisplayed={5}
-                        prevPageText={"‹"}
-                        nextPageText={"›"}
-                        onChange={handlePageChange}
-                    />
+
+                        <CommonTable headersName={[
+                            '',
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }} onClick={toggleSort}>
+                                영화 ID
+                                <button style={{ marginLeft: '5px', border: 'none', background: 'none', cursor: 'pointer' }}>
+                                    {sortOrder === 'asc' ? '▲' : '▼'}
+                                </button>
+                            </div>,
+                            '영화 이름',
+                            '영화 장르',
+                            '영화 감독',
+                            '영화 시간',
+                            ''
+                        ]}>
+                            {movies.map((movie, index) => (
+                                <CommonTableRow key={index}>
+                                    <CommonTableColumn className="Admin_MovieTable_CheckBox">
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedMovies.includes(movie.movieId)}
+                                            onChange={() => handleCheckboxChange(movie)}
+                                        />
+                                        <input type="hidden" name="posterIds"
+                                               value={JSON.stringify(movie.posterIds || [])} />
+                                        <input type="hidden" name="trailerIds"
+                                               value={JSON.stringify(movie.trailerIds || [])} />
+                                        <input type="hidden" name="reviewIds"
+                                               value={JSON.stringify(movie.reviewIds || [])} />
+                                        <input type="hidden" name="watchIds" value={JSON.stringify(movie.watchIds || [])} />
+                                        <input type="hidden" name="favorIds" value={JSON.stringify(movie.favorIds || [])} />
+                                    </CommonTableColumn>
+                                    <CommonTableColumn className="Admin_MovieTable_Id" >{movie.movieId}</CommonTableColumn>
+                                    <CommonTableColumn className="Admin_MovieTable_Title" >{movie.movieTitle}</CommonTableColumn>
+                                    <CommonTableColumn className="Admin_MovieTable_Genres" >{movie.genres.join(', ')}</CommonTableColumn>
+                                    <CommonTableColumn className="Admin_MovieTable_Director" >{movie.directors.join(', ')}</CommonTableColumn>
+                                    <CommonTableColumn className="Admin_MovieTable_Runtime" >{movie.runtime}</CommonTableColumn>
+                                    <CommonTableColumn>
+                                        <EditButton onClick={() => handleEditMovie(movie.movieId)}>수정</EditButton>
+                                    </CommonTableColumn>
+                                </CommonTableRow>
+                            ))}
+                        </CommonTable>
+
+                        <Pagination
+                            activePage={currentPage}
+                            itemsCountPerPage={5}
+                            totalItemsCount={totalItems}
+                            pageRangeDisplayed={5}
+                            prevPageText={"‹"}
+                            nextPageText={"›"}
+                            onChange={handlePageChange}
+                        />
+                    </div>
                 </div>
             </div>
             <ChatBot />
-        </div>
+        </Wrap>
     );
 };
 
@@ -316,9 +325,16 @@ export default AdminMovieList;
 
 // 스타일 컴포넌트들은 그대로 유지
 const FormBox = styled.form`
-    width: 1044px;
+    // width: 1044px;
     display: flex;
 `;
+
+const Wrap = styled.div`
+
+    height: 1000px;
+    background: #eee;
+
+`
 
 const SearchInput = styled.input`
     display: flex;
@@ -336,6 +352,49 @@ const SearchInput = styled.input`
     background-color: transparent;
     border-bottom: 1px solid rgb(176, 184, 193);
 `;
+
+const MovieAddDeleteButtonDiv = styled.div`
+    width: 1044px;
+    display: flex;
+    justify-content: right;
+    // border: 1px solid red;
+    .botom_write, .botom_delete {
+        width: 90px;
+        height: 45px;
+        border: 1px solid #cccccc;
+        border-radius: 2px;
+        // float: right;
+        // margin-top: 2px;
+        position: relative;
+        // bottom: -10px;
+
+        a {
+            font-size: 14px;
+            color: #fff;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            cursor: pointer;
+
+            &:hover {
+                font-weight: 600;
+            }
+        }
+    }
+
+    .botom_write {
+        background-color: #3182f6;
+        margin-right: 20px;
+    }
+
+    .botom_delete {
+        background-color: red;
+    }
+
+
+`
+
+
 
 const Button = styled.button`
     width: 140px;
@@ -356,45 +415,12 @@ const Header = styled.div`
     font-family: 'SUIT-Regular' !important;
     font-size: 36px;
     font-weight: 800;
-    margin-bottom: 48px;
     padding-top: 74px;
-    text-align: left;
+    text-align: center;
     width: 1044px;
     margin: 0 auto;
-    margin-bottom: 48px;
 
-    .botom_write, .botom_delete {
-        width: 90px;
-        height: 45px;
-        border: 1px solid #cccccc;
-        border-radius: 2px;
-        float: right;
-        margin-top: 2px;
-        position: relative;
-        bottom: -10px;
-
-        a {
-            font-size: 14px;
-            color: #fff;
-            text-align: center;
-            display: flex;
-            justify-content: center;
-            cursor: pointer;
-
-            &:hover {
-                font-weight: 600;
-            }
-        }
-    }
-
-    .botom_write {
-        background-color: #3182f6;
-    }
-
-    .botom_delete {
-        background-color: red;
-        margin-right: 20px;
-    }
+   
 `;
 
 const EditButton = styled.button`
@@ -408,5 +434,23 @@ const EditButton = styled.button`
 
     &:hover {
         background-color: #e61e91;
+    }
+`;
+
+const WriteSection = styled.section`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 74px;
+    margin: 0 auto;
+    width: 1024px;
+    // border-bottom: 1px solid rgb(176, 184, 193);
+    
+    img{
+        width: 26px;
+        height: 26px;
+        margin-bottom: 10px;
+        margin-left: 20px;
+        opacity: 0.5;
     }
 `;

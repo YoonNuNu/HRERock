@@ -4,12 +4,11 @@
     -webkit-box-pack: center;
     justify-content: center;
     display: flex;
-    margin: 0;
     padding: 0;
     width: 1044px;
     color: #d1d6db;
 
-    margin: 40px auto;
+    margin: 20px auto;
     box-sizing: border-box;
 
     /*폰트 관련*/

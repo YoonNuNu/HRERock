@@ -49,6 +49,8 @@ const UserName = styled.span`
 const CheckboxGraphTitle = styled.footer`
     color: #57565c;
     margin-top: 10px;
+    text-align: left;
+    word-break: keep-all;
 `;
 
 const ReviewPointInfo = styled.div`

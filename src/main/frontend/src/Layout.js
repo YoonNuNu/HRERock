@@ -7,7 +7,7 @@ const Layout = ({ children }) => {
         <div>
             <Navs />
             {children}  {/* 페이지 별로 다른 내용이 렌더링 되는 부분 */}
-            <Footer />
+            {/*<Footer />*/}
         </div>
     );
 };

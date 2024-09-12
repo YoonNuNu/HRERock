@@ -351,7 +351,7 @@ const DetailBox = styled.div`
     width: 1200px;
     display: flex;
     flex-wrap: wrap;
-    margin-top: 30px;
+    //margin-top: 30px;
 
     // border: 1px solid red;
     .DetailList{

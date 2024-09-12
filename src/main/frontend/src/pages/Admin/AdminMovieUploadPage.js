@@ -9,6 +9,7 @@ import home from "./images/home.svg";
 import AddActorModal from './AddActorModal';
 import AddDirectorModal from './AddDirectorModal';
 import ChatBot from '../../components/ChatBot/ChatBot';
+import styled from 'styled-components';
 
 
 //  새 영화 1번째 페이지
@@ -148,6 +149,11 @@ function AdminMovieUploadPage() {
         const {name, value} = e.target;
         if (name === 'movieTitle') {
             setMovieTitle(value);
+        } else if (name === 'movieRating') {
+            setMovieData(prevData => ({
+                ...prevData,
+                [name]: value
+            }));
         } else {
             setInputValues(prevValues => ({...prevValues, [name]: value}));
             setMovieData(prevData => ({...prevData, [name]: value}));
@@ -227,7 +233,6 @@ function AdminMovieUploadPage() {
                 movieGenres: [],
                 runTime: '',
                 movieDescription: '',
-                movieRating: 'ratingTrue',
                 openYear: ''
             }));
             alert(`영화 "${movieTitle}"이(가) 성공적으로 생성되었습니다. (영화 ID: ${newMovieId})\n다른 정보를 입력해 주세요.`);
@@ -282,15 +287,10 @@ function AdminMovieUploadPage() {
                 movieGenres: movieData.movieGenres.length > 0 ? movieData.movieGenres : null,
                 runTime: parseInt(movieData.runTime, 10) || 0,
                 openYear: parseInt(movieData.openYear, 10) || 0,
-                movieRating: movieData.movieRating || null,
+                movieRating: movieData.movieRating === 'ratingTrue' ? '청소년 관람 가능' : '청소년 관람 불가능',
                 movieDescription: movieData.movieDescription || null
             };
-
-            console.log('Sending data to server:', JSON.stringify(dataToSend));
-
             const response = await axios.post('/admin/movie/list/addDetail2', dataToSend);
-            console.log('Server response:', response.data);
-
             if (response.data && response.data.movieId) {
                 navigate("/admin/MovieUploadFile", {
                     state: {
@@ -302,7 +302,6 @@ function AdminMovieUploadPage() {
                 throw new Error('Invalid response from server');
             }
         } catch (error) {
-            console.error('Error submitting movie data:', error.response?.data || error.message);
             alert('영화 정보 제출 중 오류가 발생했습니다. 콘솔을 확인해 주세요.');
         }
     };
@@ -397,11 +396,12 @@ function AdminMovieUploadPage() {
     }
 
 
+
     return (
 
 
         <>
-            <div className='wrap'>
+            <Wrap>
                 <SideBar />
                 <div className="admin_head">
                     <img src={home} alt="Home" />
@@ -419,7 +419,7 @@ function AdminMovieUploadPage() {
                     </div>
                     <div className="UploadInfo">
                         <form onSubmit={handleTitleSubmit} className="UploadTitleForm">
-                            <label htmlFor="" className="label">
+                            <label htmlFor="" >
                                 <div>제목:</div>
                                 <div className='MovieTitleInputDiv'>
                                     <input
@@ -568,7 +568,7 @@ function AdminMovieUploadPage() {
                         onAdd={handleDirectorAdd}
                     />
                 </div>
-            </div>
+            </Wrap>
             <ChatBot />
         </>
     );
@@ -578,3 +578,9 @@ function AdminMovieUploadPage() {
 
 export default AdminMovieUploadPage;
 
+const Wrap = styled.div`
+    height: 1000px;
+    background: #eee;
+
+
+`

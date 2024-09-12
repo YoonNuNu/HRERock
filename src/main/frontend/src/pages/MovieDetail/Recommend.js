@@ -7,6 +7,7 @@ import PreferActorsAndDirectors from "./component/PreferActorsAndDirectors";
 import PointsContent from './component/PointsContent';
 import PointsCollab from './component/PointsCollab';
 import MovieCollab from './component/MovieCollab';
+import ChatBot from '../../components/ChatBot/ChatBot.js';
 
 // Images
 import top from "../Login/images/top.png";
@@ -138,58 +139,6 @@ const Recommend = () => {
         return <div>{error}</div>;
     }
 
-    // useEffect(() => {
-    //     const token = localStorage.getItem('accessToken');
-    //     if (token && !memberInfo) {
-    //         fetchMemberInfo(token)
-    //             .then(info => {
-    //                 setMemberInfo(info);
-    //             })
-    //             .catch(error => {
-    //                 console.error('Error:', error);
-    //                 setError('데이터를 불러오는데 실패했습니다.');
-    //             });
-    //     }
-    //
-    //     // Clean up function to delete files on unmount
-    //     return () => {
-    //         if ((filesToDelete.images.length > 0 || filesToDelete.json.length > 0) && memberInfo) {
-    //             const deleteFiles = async () => {
-    //                 try {
-    //                     const token = localStorage.getItem('accessToken');
-    //                     // Delete image files
-    //                     if (filesToDelete.images.length > 0) {
-    //                         await axios.post(`/user/personal/${memberInfo.memNum}/delete`,
-    //                             { fileNames: filesToDelete.images },
-    //                             { headers: { 'Authorization': `Bearer ${token}` } }
-    //                         );
-    //                     }
-    //
-    //                     // Delete JSON files
-    //                     if (filesToDelete.json.length > 0) {
-    //                         await axios.post(`/user/personal/${memberInfo.memNum}/delete`,
-    //                             { fileNames: filesToDelete.json },
-    //                             { headers: { 'Authorization': `Bearer ${token}` } }
-    //                         );
-    //                     }
-    //
-    //                     console.log('임시 파일들이 성공적으로 삭제되었습니다.');
-    //                 } catch (error) {
-    //                     console.error('임시 파일 삭제 중 오류 발생:', error);
-    //                 }
-    //             };
-    //
-    //             deleteFiles();
-    //         }
-    //     };
-    // }, [filesToDelete, memberInfo, fetchMemberInfo]);
-    //
-    // useEffect(() => {
-    //     if (memberInfo && memberInfo.memNum) {
-    //         addFilesToDeleteList(memberInfo.memNum);
-    //     }
-    // }, [memberInfo, addFilesToDeleteList]);
-
     return (
         <WrapBody>
             {/* Top section */}
@@ -258,6 +207,7 @@ const Recommend = () => {
                     {memberInfo && <MovieCollab memNum={memberInfo.memNum} />}
                 </Container>
             </RecommendContainer>
+        <ChatBot />
         </WrapBody>
     );
 };
@@ -352,7 +302,7 @@ const GrapTitle = styled.div`
 const DetailBox = styled.div`
     width: 1024px;
     margin: 0 auto;
-    margin-bottom: 80px;
+    margin-bottom: 40px;
     border-radius: 8px;
     background-color: rgb(11, 11, 13) !important;
     border: 1px solid rgb(25, 31, 40);
@@ -363,7 +313,6 @@ const DetailBox = styled.div`
 const Txt = styled.div`
     width: 1024px;
     margin: 0 auto;
-    margin-bottom: 20px;
     display: flex;
     border-top: 1px solid rgb(33, 33, 33);
     border-bottom: 1px solid rgb(33, 33, 33);

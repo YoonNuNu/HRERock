@@ -46,7 +46,9 @@
     font-size: 12px;
     font-weight: 400;
     font-family: 'SUIT-Regular' !important;
-    text-indent: 10px;
+    /* text-indent: 10px; */
+    vertical-align: middle;
+    word-break: keep-all;
 }
 .common-table-column a{
     color: #000 !important;

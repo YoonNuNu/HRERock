@@ -7,6 +7,7 @@ import AddDirectorModal from './AddDirectorModal';
 import SideBar from './SideBar';
 import home from "./images/home.svg";
 import ChatBot from '../../components/ChatBot/ChatBot';
+import styled from 'styled-components';
 
 
 function AdminMovieUploadModifyPage() {
@@ -57,7 +58,7 @@ function AdminMovieUploadModifyPage() {
                 movieGenres: response.data.movieGenres || [],
                 runTime: response.data.runTime || '',
                 movieDescription: response.data.movieDescription || '',
-                movieRating: response.data.movieRating || 'ratingTrue',
+                movieRating: response.data.movieRating === '청소년 관람 가능' ? 'ratingTrue' : 'ratingFalse',
                 openYear: response.data.openYear || ''
             });
         } catch (error) {
@@ -227,7 +228,8 @@ function AdminMovieUploadModifyPage() {
         try {
             const dataToSubmit = {
                 ...movieData,
-                movieId: movieId
+                movieId: movieId,
+                movieRating: movieData.movieRating === 'ratingTrue' ? '청소년 관람 가능' : '청소년 관람 불가능'
             };
             const response = await axios.put(`/admin/movie/${movieId}/updateFirst`, dataToSubmit);
             navigate(`/admin/movie/${movieId}/modify2`, { state: { movieData: response.data } });
@@ -311,7 +313,7 @@ function AdminMovieUploadModifyPage() {
 
     return (
         <>
-            <div className='wrap'>
+            <Wrap>
                 <SideBar />
                 <div className="admin_head">
                     <img src={home} alt="Home" />
@@ -469,10 +471,17 @@ function AdminMovieUploadModifyPage() {
                         onAdd={handleDirectorAdd}
                     />
                 </div>
-            </div>
+            </Wrap>
             <ChatBot />
         </>
     );
 }
 
 export default AdminMovieUploadModifyPage;
+
+const Wrap = styled.div`
+    height: 1000px;
+    background: #eee;
+
+
+`

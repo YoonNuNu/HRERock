@@ -5,7 +5,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
-
 import ChatBot from '../../components/ChatBot/ChatBot';
 
 //공지사항 보기
@@ -16,7 +15,6 @@ const NoticeView = () => {
     const [isAdmin, setIsAdmin] = useState(false);
     const [editTitle, setEditTitle] = useState('');
     const [editContent, setEditContent] = useState('');
-    const [editFiles, setEditFiles] = useState({});
     const navigate = useNavigate();
     const { boardId } = useParams();
 
@@ -25,7 +23,7 @@ const NoticeView = () => {
 
         if (!token) {
             alert("로그인이 필요합니다");
-            navigate('/login');
+            navigate('/Login');
             return;
         }
 
@@ -39,22 +37,26 @@ const NoticeView = () => {
             }
             else {
                 setIsAdmin(false);
+
             }
             getBoardDetail(boardId);
         }).catch(error => {
             console.error("사용자 정보를 가져오는 중 오류 발생:", error);
             alert("오류가 발생했습니다. 다시 로그인해주세요")
-            navigate("/login");
+            navigate("/Login");
         })
+
+
     }, [boardId, navigate]);
 
     const getBoardDetail = (boardId) => {
-        console.log(`Fetching details for board ID: ${boardId}`);
+        console.log(`Fetching details for board ID: ${boardId}`);   //디버깅 로그 추가
 
         axios.get(`/admin/${boardId}`)
             .then(response => {
-                console.log('게시글 상세 정보:', response.data);
+                console.log('게시글 상세 정보:', response.data);    //디버깅 로그 추가
                 setNoticeInfo(response.data);
+
             })
             .catch(error => {
                 console.error('게시글 상세 정보를 가져오는 중 오류 발생:', error);
@@ -85,11 +87,12 @@ const NoticeView = () => {
         }).then(response => {
             alert("공지글 수정이 완료되었습니다.");
             console.log('게시글 수정 완료:', response.data);
-            navigate('/admin/notice');
+            navigate(0);
         }).catch(error => {
             console.error('게시글 수정 중 오류 발생:', error);
             handleAxiosError(error);
         })
+
     }
 
     // 공지글 삭제
@@ -103,7 +106,8 @@ const NoticeView = () => {
         }).then(response => {
             console.log('게시글 삭제 완료:', response.data);
             alert('게시글이 삭제되었습니다.');
-            navigate('/user/notice');
+            navigate('/user/boardList');
+
         }).catch(error => {
             console.error('게시글 삭제 중 오류 발생:', error);
             handleAxiosError(error)
@@ -120,6 +124,7 @@ const NoticeView = () => {
             headers: {
                 'Authorization': `Bearer ${token}`,
             }
+
         }).then(response => {
             if (response.status === 200) {
                 const blob = new Blob([response.data], {
@@ -138,66 +143,13 @@ const NoticeView = () => {
                 console.error("downloadFile response.status:", response.status);
                 alert('파일 다운로드 중 오류가 발생했습니다.');
             }
+
         }).catch(error => {
-            console.error('파일 다운로드 중 오류 발생:', error);
+            console.error('파일 다룬로드 중 오류 발생:', error);
             alert("파일 다운로드 중 오류가 발생했습니다");
+            // handleAxiosError(error);
         });
-    };
 
-    // 파일 수정 (새로 추가)
-    const handleFileChange = (fileId, event) => {
-        setEditFiles({
-            ...editFiles,
-            [fileId]: event.target.files[0]
-        });
-    };
-
-    const updateFile = async (fileId) => {
-        const token = localStorage.getItem('accessToken');
-        const file = editFiles[fileId];
-
-        if (!file) {
-            alert('새 파일을 선택해주세요.');
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('file', file);
-
-        try {
-            const response = await axios.put(`/admin/boardFileUpdate/${fileId}`, formData, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
-            alert('파일이 성공적으로 수정되었습니다.');
-            getBoardDetail(boardId);
-
-        } catch (error) {
-            console.error('파일 수정 중 오류 발생:', error);
-            alert('파일 수정 중 오류가 발생했습니다.');
-        }
-    };
-
-    // 파일 삭제 (새로 추가)
-    const deleteFile = async (boardFileId) => {
-        const token = localStorage.getItem('accessToken');
-
-        try {
-            await axios.delete(`/admin/boardDelete`, {
-                params: { boardFileId: boardFileId },
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            alert('파일이 성공적으로 삭제되었습니다.');
-            getBoardDetail(boardId);
-        } catch (error) {
-            console.error('파일 삭제 중 오류 발생:', error);
-            alert('파일 삭제 중 오류가 발생했습니다.');
-        }
     };
 
     // 에러 처리
@@ -210,6 +162,7 @@ const NoticeView = () => {
         else if (error.request) {
             console.error('요청:', error.request);
             alert('서버에 요청을 보내지 못했습니다. 네트워크 연결을 확인하거나 관리자에게 문의하세요');
+
         }
         else {
             console.error('오류 메세지:', error.message);
@@ -226,22 +179,27 @@ const NoticeView = () => {
 
     return (
         <>
+
+
             <Wrap>
                 <NoticeViewHead>
                     <Header className="name">
-                        <Link to={`/user/notice/`}>
-                            게시판
+                        <Link to={`/user/boardList/`}>
+                            공지사항
                         </Link>
                     </Header>
                     <NoticeViewTitle>
+                        {/* 조건부 렌더링 적용 */}
                         {noticeInfo ? (
+
                             <input
                                 type="text"
                                 id="boardTitle"
                                 className="post_title"
                                 onChange={(e) => setEditTitle(e.target.value)}
                                 value={editTitle !== "" ? editTitle : noticeInfo?.boardTitle}
-                                readOnly={!isAdmin}
+
+                                readOnly
                             />
                         ) : (
                             <input
@@ -254,90 +212,96 @@ const NoticeView = () => {
                         )}
                     </NoticeViewTitle>
                     <div className="noticeViewInfo">
+                        {/* 조건부 렌더링 적용 */}
                         {noticeInfo ? (
                             <>
-                                <span>날짜: {noticeInfo.modifyDate}</span>
-                                <span>조회수: {noticeInfo.boardViewCount ?? '조회수 정보 없음'}</span>
+                                <NoticeWriter>
+                                    <span>
+                                        작성자: 희노애락 관리자
+                                    </span>
+                                </NoticeWriter>
+                                <NoticeInfo>
+                                    <span>날짜: {noticeInfo.modifyDate}</span>
+                                    <span>조회수: {noticeInfo.boardViewCount ?? '조회수 정보 없음'}</span>
+                                </NoticeInfo>
                             </>
                         ) : (
                             <>
-                                <span>날짜: 정보 없음</span>
-                                <span>조회수: 조회수 정보 없음</span>
+                                <NoticeWriter>
+                                    <span>
+                                        작성자: 희노애락 관리자
+                                    </span>
+                                </NoticeWriter>
+                                <NoticeInfo>
+                                    <span>날짜: 정보 없음</span>
+                                    <span>조회수: 조회수 정보 없음</span>
+                                </NoticeInfo>
                             </>
                         )}
                     </div>
                 </NoticeViewHead>
                 <NoticeViewContent>
+                    {/* 조건부 렌더링 적용 */}
                     {noticeInfo ? (
                         <textarea
+
                             className="post_text"
                             value={editContent !== '' ? editContent : noticeInfo?.boardContent}
                             onChange={(e) => setEditContent(e.target.value)}
-                            readOnly={!isAdmin}
+                            readOnly
                         ></textarea>
                     ) : (
                         <textarea
+
                             className="post_text"
                             defaultValue="내용 없음"
-                            readOnly={!isAdmin}
+                            readOnly
                         ></textarea>
                     )}
                 </NoticeViewContent>
-                <FormBlockFiles>
-                    <NoticeViewFile>
-                        {noticeInfo && noticeInfo.files && noticeInfo.files.length > 0 ? (
-                            <div>
-                                <h3>첨부파일:</h3>
-                                <ul>
-                                    {noticeInfo.files.map((file) => (
-                                        <li key={file.boardFileId}>
-                                            <div className="NoticeFileNameDiv">
-                                                <a href="#"
-
-                                                   onClick={() => downloadFile(file.boardFileId, file.boardOriginFileName)}>
-                                                    {file.boardOriginFileName}
-                                                </a>
-                                            </div>
-
-                                            {isAdmin && (
-                                                <>
-                                                    <input
-                                                        type="file"
-                                                        onChange={(e) => handleFileChange(file.boardFileId, e)}
-                                                    />
-                                                    <button  className="editBtn" onClick={() => updateFile(file.boardFileId)}>수정</button>
-                                                    <button className="deleteBtn" onClick={() => deleteFile(file.boardFileId)}>삭제</button>
-                                                </>
-                                            )}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        ) : (
-                            <div>첨부파일이 없습니다.</div>
-                        )}
-                    </NoticeViewFile>
-
-                </FormBlockFiles>
+                <NoticeViewFile>
+                    {/* 조건부 렌더링 적용 */}
+                    {noticeInfo && noticeInfo.files && noticeInfo.files.length > 0 ? (
+                        <div>
+                            <h2><strong>첨부파일</strong></h2>
+                            <ul>
+                                {noticeInfo.files.map((file) => (
+                                    <li key={file.boardFileId}>
+                                        <a onClick={() => downloadFile(file.boardFileId, file.boardOriginFileName)}>
+                                            {file.boardOriginFileName}
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    ) : (
+                        <div>첨부파일이 없습니다.</div>
+                    )}
+                </NoticeViewFile>
                 <NoticeViewBtn>
                     <NoticeViewBtnWrap>
+
                         <div className="btn_center">
-                            {isAdmin && (
+                            {/* {isAdmin && (
                                 <>
                                     <button className="modify_btn" onClick={editPost}>수정</button>
                                     <button className="delete_btn" onClick={deletePost}>삭제</button>
                                 </>
-                            )}
+                            )} */}
                         </div>
                         <div className="btn_right">
-                            <button className="back_to_list" onClick={() => navigate('/user/Notice')}>목록으로<br /> 돌아가기</button>
+                            <button className="back_to_list" onClick={() => navigate('/user/boardList')}>목록으로<br /> 돌아가기</button>
                         </div>
+
                     </NoticeViewBtnWrap>
+
                 </NoticeViewBtn>
             </Wrap>
+
             <ChatBot />
         </>
     );
+
 }
 export default NoticeView;
 
@@ -352,7 +316,6 @@ const Wrap = styled.div`
     display: inline-block;
     display: flex;
     flex-direction: column;
-    align-items: center
 `;
 
 
@@ -363,9 +326,15 @@ const Header = styled.div`
     //background: red;
     font-family: 'SUIT-Regular' !important;
     // color: rgb(51, 61, 75);
+    // color: white;
     font-size: 36px;
     font-weight: 800;
     text-align: left;
+    
+    a{
+        color: black;
+    }
+
 `;
 
 
@@ -376,6 +345,8 @@ const NoticeViewHead = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
+
 
     .noticeViewInfo{
         width: 1024px;
@@ -396,11 +367,52 @@ const NoticeViewTitle = styled.div`
     text-align: center;
     // border: 1px solid red;
 
-    input[type = "input"]{
-        border: none;
 
+    input[type = "text"]{
+        border: none;
+        border-top: 2px solid #d6d4ca;
+        border-bottom: 2px solid #d6d4ca;
     }
 `;
+// 글 작성자
+const NoticeWriter = styled.div`
+    // border: 1px dashed black;
+    background: #f8f8f8;
+    width: 50%;
+    height: 45px;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    padding-right: 10px;
+    border: none;
+    border-top: 2px solid #d6d4ca;
+    border-bottom: 2px solid #d6d4ca;
+    // border-radius: 10px;
+
+    span{
+        color: black;
+    }
+`
+
+// 글 날짜, 조회
+const NoticeInfo = styled.div`
+    // border: 1px dashed black;
+    background: #f8f8f8;
+    width: 50%;
+    height: 45px;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    padding-right: 10px;
+    border: none;
+    border-top: 2px solid #d6d4ca;
+    border-bottom: 2px solid #d6d4ca;
+    // border-radius: 10px;
+
+    span{
+        color: black;
+    }
+`
 
 
 // 글 내용
@@ -411,55 +423,31 @@ const NoticeViewContent = styled.div`
     text-align: center;
 
     textarea{
+        // border-radius: 20px;
 
+        //         border: none;
+        // border-top: 2px solid #d6d4ca;
+        // border-bottom: 2px solid #d6d4ca;
     }
 `;
 
 // 첨부 파일
 const NoticeViewFile = styled.div`
     display: flex;
-    //flex-direction: column;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     margin-top: 10px;
 
     div{
         width: 1024px;
-        //margin-top: 10px;    
+        margin-top: 10px;
+    }
+    
+    a{
+        cursor: pointer;
     }
 
-    input{
-        //border: 1px solid blue;
-
-    }
-    li{
-        display: flex;
-        //justify-content: center;
-        align-items: center;
-        margin-bottom:10px;
-    }
-    .NoticeFileNameDiv{
-        width: 200px;
-        align-items: center;
-        //border: 1px solid black;
-    }
-
-    .editBtn{
-        border: 1px solid #3182f6;
-    }
-    .deleteBtn{
-        color: #fff !important;
-        font-weight: 500 !important;
-        background-color: red !important;
-
-        &:hover {
-            background-color: #ce1d1d !important;
-        }
-
-        &:active, &:focus {
-            border: 1px solid #0f2027 !important;
-        }
-    }
 `
 
 // 수정, 삭제, 돌아가기 버튼
@@ -474,30 +462,30 @@ const NoticeViewBtn = styled.div`
 const NoticeViewBtnWrap = styled.div`
     width: 1024px;
 
-    display: flex;
+    display: flex;    
     justify-content: space-between;
 
     // 수정 버튼
     .modify_btn{
-        background-color: #e5e8eb;
+    background-color: #e5e8eb;
 
-        &:hover{
-            cursor: pointer;
-            background-color: #3182f6;
-            color: white;
+    &:hover{
+        cursor: pointer;
+        background-color: #3182f6;
+        color: white;
         }
     }
 
     // 삭제 버튼
     .delete_btn{
-        background-color: #e5e8eb;
+    background-color: #e5e8eb;
 
         &:hover{
-            cursor: pointer;
-            background-color: red;
-            color: white;
+        cursor: pointer;
+        background-color: red;
+        color: white;
         }
-
+    
 
     }
 
@@ -510,127 +498,10 @@ const NoticeViewBtnWrap = styled.div`
         border: 1px solid #cccccc;
 
         &:hover{
-            cursor: pointer;
-            background-color: #3182f6;
-            color: white;
-        }
+        cursor: pointer;
+        background-color: #3182f6;
+        color: white;
+            }
     }
-
+    
 `
-const FormBlockFiles = styled.div`
-
-    //border: 1px solid red;
-    box-sizing: border-box;
-    vertical-align: middle;
-    width: 1024px;
-    margin-top: 40px;
-    margin-bottom: 100px;
-    text-align: left;
-    display: flex;
-    .submit {
-        float: right;
-        width: 300px !important;
-        height: 45px !important;
-        margin-right: auto !important;
-        padding: 1em 9em !important;
-        line-height: 1.5em !important;
-        font-size: 13px !important;
-        font-weight: 600 !important;
-        cursor: pointer !important;
-        background-color: #3182f6 !important;
-        color: #fff !important;
-
-        &:hover {
-            background-color: #1776ff !important;
-        }
-
-        &:active, &:focus {
-            border: 1px solid #0f2027 !important;
-        }
-    }
-
-    .submit-img {
-        float: left;
-        width: 18px;
-        height: 18px;
-        text-align: left;
-        line-height: 25px;
-    }
-
-    .removeFile {
-        color: #fff !important;
-        font-weight: 500 !important;
-        background-color: red !important;
-
-        &:hover {
-            background-color: #ce1d1d !important;
-        }
-
-        &:active, &:focus {
-            border: 1px solid #0f2027 !important;
-        }
-    }
-
-    .filebox {
-        float: right;
-        width: 935px;
-    }
-
-    .filebox label {
-        margin-right: 20px;
-        margin-bottom: 20px;
-        display: inline-block;
-        padding: .5em .75em;
-        color: #0f2027;
-        font-size: 13px;
-        line-height: 30px;
-        text-align: center;
-        background-color: #fdfdfd;
-        cursor: pointer;
-        border: 1px solid #ebebeb;
-        width: 90px;
-        height: 45px;
-        border: 1px solid #ccc;
-        border-radius: 2px;
-        background-color: #fff;
-
-        &:hover {
-            cursor: pointer;
-            background-color: #3182f6;
-            color: #fff;
-        }
-
-        &:active, &:focus {
-            border: 1px solid #0f2027;
-        }
-    }
-
-    .filebox input[type="file"] {
-        width: 200px;
-        height: 43px;
-        padding: .55em .75em;
-        margin-top: -4px;
-        margin-right: 20px;
-        border: 1px solid #ccc;
-        font-size: 13px;
-        vertical-align: middle;
-    }
-
-    button {
-        margin-right: 20px;
-        display: inline-block;
-        padding: .5em .75em;
-        color: #0f2027;
-        font-size: 13px;
-        line-height: 30px;
-        text-align: center;
-        background-color: #fdfdfd;
-        cursor: pointer;
-        border: 1px solid #ebebeb;
-        width: 90px;
-        height: 45px;
-        border: 1px solid #ccc;
-        border-radius: 2px;
-        background-color: #fff;
-    }
-`;

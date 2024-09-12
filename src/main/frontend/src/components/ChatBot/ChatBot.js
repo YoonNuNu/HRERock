@@ -220,14 +220,14 @@ function ChatBot() {
 
             {showAdminPanel && userRole === 'ADMIN' && (
                 <div className="admin-chat-panel">
-                    <h2>활성 채팅방 목록</h2>
+                    <h2><strong>활성 채팅방 목록</strong></h2>
                     <button onClick={fetchActiveChatRooms}>새로고침</button>
                     <button onClick={() => setShowAdminPanel(false)}>닫기</button>
                     <ul>
                         {activeChatRooms.map(room => (
                             <li key={room.chatRoomId}>
-                                채팅방 ID: {room.chatRoomId} - 사용자: {room.memId}
-                                <button onClick={() => joinChatRoom(room.chatRoomId)}>참여</button>
+                                <div className="roomnum"> 채팅방 ID: {room.chatRoomId} - 사용자: {room.memId}</div>
+                                <button className="joinbutton" onClick={() => joinChatRoom(room.chatRoomId)}>참여</button>
                             </li>
                         ))}
                     </ul>
@@ -242,7 +242,7 @@ function ChatBot() {
                         ) : (
                             <h3>챗봇 상담</h3>
                         )}
-                        <button onClick={userRole === 'ADMIN' ? () => setIsChatOpen(false) : closeChatBot}>
+                        <button className="exitbutton" onClick={userRole === 'ADMIN' ? () => setIsChatOpen(false) : closeChatBot}>
                             {userRole === 'ADMIN' ? '나가기' : '닫기'}
                         </button>
                     </div>

@@ -156,20 +156,20 @@ function Login() {
                             >
                                 <a>로그인</a>
                             </CommonButton>
-                            <SignupButton>
-                                <Link to="/SignUp">회원가입</Link>
-                            </SignupButton>
-                            <LoginSignupContent>
-                                <LogoImg
-                                    alt="logo"
-                                    src={google}
-                                    onClick={() => {
-                                        window.location.replace("http://localhost:8080/oauth2/authorization/google");
-                                    }}
-                                >
-                                </LogoImg>
-                            </LoginSignupContent>
                         </form>
+                        <SignupButton>
+                            <Link to="/SignUp">회원가입</Link>
+                        </SignupButton>
+                        <LoginSignupContent>
+                            <LogoImg
+                                alt="logo"
+                                src={google}
+                                onClick={() => {
+                                    window.location.replace("http://localhost:8080/oauth2/authorization/google");
+                                }}
+                            >
+                            </LogoImg>
+                        </LoginSignupContent>
                     </EmailLoginContainer>
                 </LoginSigninContent>
             </LoginContainer>
@@ -424,8 +424,9 @@ const LoginContainer = styled.div`
 
 // 전체 박스
 const LoginWrap = styled.div`
-    padding: 1px 0 50px;
+    padding: 1px;
     min-height: 100%;
+    height: 735px;
     background-image:url('./images/bg_3.png');
     background-size: cover;
     background-position: center;

@@ -71,10 +71,8 @@ function FindLogin() {
                 {/*아이디찾기 버튼*/}
                 <CommonButton
                     type="submit"
-                    onClick={() => {
-                    }}
                 >
-                    <a>비밀번호 찾기</a>
+                   비밀번호 찾기
                 </CommonButton>
             </Form>
         </EmailLoginContainer>
@@ -123,6 +121,7 @@ const EmailLoginInput = styled.input`
 
 //버튼 디자인
 const CommonButton = styled.button`
+    font-family: 'SUIT-Regular' !important;
     display: block;
     height: 48px;
     border-radius: 30px;
@@ -144,22 +143,5 @@ const CommonButton = styled.button`
         border: 1px solid #fff;
     }
 
-    a{
-        cursor: pointer;
-        text-align: center;
-        text-decoration: none;
-        vertical-align: middle;
-        color: #ffffff;
-        line-height: 20px;
-        font-size: 16px;
-        font-weight: 500;
-        font-family: 'SUIT-Regular' !important;
-        display: flex;
-        justify-content: center;
-
-        //&:hover{
-        //    color: #1351f9;
-        //    font-weight: 800;
-        //}
     }
 `;

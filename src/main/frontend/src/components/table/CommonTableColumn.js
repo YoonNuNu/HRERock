@@ -2,9 +2,9 @@ import React from 'react';
 
 
 
-const CommonTableColumn = ({ children }) => {
+const CommonTableColumn = ({ className,  style, children }) => {
     return (
-        <td className="common-table-column">
+        <td className={`common-table-column ${className}` } style={style} >
             {
                 children
             }
@@ -13,3 +13,4 @@ const CommonTableColumn = ({ children }) => {
 }
 
 export default CommonTableColumn;
+

@@ -11,9 +11,11 @@ import axios from "axios";
 import SideBar from './SideBar';
 
 import './css/AdminMemberList.css';
+import './css/AdminNoticeListPage.css'
 
 import home from "./images/home.svg";
 import ChatBot from '../../components/ChatBot/ChatBot';
+import { api } from '../../api/axios';
 // import handleEnterKey from '../../components/handleEnterKey';
 
 function AdminNoticeListPage() {
@@ -42,7 +44,7 @@ function AdminNoticeListPage() {
 
         if (!token) {
             alert("로그인이 필요합니다.");
-            navigate('/login');
+            navigate('/Login');
             return;
         }
 
@@ -62,12 +64,12 @@ function AdminNoticeListPage() {
                 // 401 Unauthorized: 토큰 만료 또는 잘못된 토큰
                 alert("세션이 만료되었습니다. 다시 로그인해주세요.");
                 localStorage.removeItem('accessToken'); // 토큰 제거
-                navigate('/login');
+                navigate('/Login');
             } else {
                 // 기타 오류
                 console.error('Error fetching user info:', error);
                 alert("오류가 발생했습니다. 다시 로그인해주세요.");
-                navigate('/login');
+                navigate('/Login');
             }
         } finally {
             setIsLoading(false);
@@ -111,7 +113,7 @@ function AdminNoticeListPage() {
             }
 
 
-            const response = await axios.get('/user/boardSearch', {
+            const response = await api.get('/user/boardSearch', {
                 params: {
                     page: page - 1,
                     size: 10,
@@ -135,8 +137,10 @@ function AdminNoticeListPage() {
 
     // 엔터키 기능
     const handleEnterKey = (e) => {
-        if(e.key === 'Enter'){
-            searchBoards(1);
+
+        if (e.key === 'Enter') {
+            console.log("input enter key:")
+            // activeButton();
         }
     }
 
@@ -268,7 +272,7 @@ function AdminNoticeListPage() {
 
     return (
         <>
-            <div className='wrap'>
+            <Wrap>
                 {/* sidebar */}
                 <SideBar />
                 {/*3.상단 브레드스크럼 메뉴바*/}
@@ -284,10 +288,8 @@ function AdminNoticeListPage() {
                 </div>
                 <WriteSection>
                     {/* 검색창 */}
-                    <button
-                        onClick={() => searchBoards(1)}
-                        type='submit'
-                    ><img src={search} alt="검색창" /></button>
+
+
                     <SearchInput
                         type="text"
                         className="bottom_search_text"
@@ -296,23 +298,22 @@ function AdminNoticeListPage() {
                         onChange={e => setSearchKeyword(e.target.value)}
                         onKeyDown={handleEnterKey}
                     />
+                    <Button
+                        onClick={() => searchBoards(1)}
+                        type='submit'
+                    >검색</Button>
+
                 </WriteSection>
                 <div className='list_div'>
 
                     <Header>
-
-                        공지사항
+                        <h2>공지사항</h2>
+                    </Header>
+                    <NoticeWriteDeleteButton>
 
                         {/* 글쓰기 버튼 */}
                         {role === 'ADMIN' && (
                             <>
-                                <button
-                                    className="botom_write"
-                                    type="button"
-                                    onClick={() => navigate(`/admin/notice/write`)}
-                                >
-                                    <a>글쓰기</a>
-                                </button>
 
                                 <button
                                     className="botom_write noticeDelete"
@@ -321,9 +322,17 @@ function AdminNoticeListPage() {
                                 >
                                     <a>삭제</a>
                                 </button>
+                                <button
+                                    className="botom_write"
+                                    type="button"
+                                    onClick={() => navigate(`/admin/boardList/write`)}
+                                >
+                                    <a>글쓰기</a>
+                                </button>
                             </>
                         )}
-                    </Header>
+
+                    </NoticeWriteDeleteButton>
 
                     {role === 'ADMIN' ? (
                             <CommonTable headersName={[
@@ -331,42 +340,74 @@ function AdminNoticeListPage() {
                                     type='checkbox'
                                     checked={checkboxSelectAll}
                                     onChange={handleAllcheck}
+
                                 />,
                                 '글번호', '제목', '등록일', '조회수']}>
                                 {boardList.length > 0 ? boardList.map((item, index) => (
-                                    <CommonTableRow key={index}>
+                                        <CommonTableRow key={index}>
+                                            <CommonTableColumn className="Admin_BoardList_CheckBox" >
+                                                <input
+                                                    type='checkbox'
+                                                    checked={selectCheckbox[index] || false}
+                                                    onChange={() => handleCheckbox(index)}
+                                                    name='selectedBoards'
+                                                    value={item.boardId}
+                                                    className='center'
+                                                />
+                                            </CommonTableColumn>
+                                            <CommonTableColumn className="Admin_BoardList_IndexNo">{noticeNumber(index)}</CommonTableColumn>
+                                            <CommonTableColumn className="Admin_BoardList_BoardTitle">
+                                                <Link to={`/admin/boardList/${item.boardId}`}>{item.boardTitle}</Link>
+                                            </CommonTableColumn>
+                                            <CommonTableColumn className="Admin_BoardList_Date">{item.modifyDate}</CommonTableColumn>
+                                            <CommonTableColumn className="Admin_BoardList_ViewCount">{item.boardViewCount}</CommonTableColumn>
+                                        </CommonTableRow>
+                                    )) :
+                                    <CommonTableRow>
                                         <CommonTableColumn>
-                                            <input
-                                                type='checkbox'
-                                                checked={selectCheckbox[index] || false}
-                                                onChange={() => handleCheckbox(index)}
-                                                name='selectedBoards'
-                                                value={item.boardId}
-                                            />
+
                                         </CommonTableColumn>
-                                        <CommonTableColumn>{noticeNumber(item.boardId)}</CommonTableColumn>
-                                        <CommonTableColumn>
-                                            <Link to={`/user/notice/${item.boardId}`}>{item.boardTitle}</Link>
+                                        <CommonTableColumn></CommonTableColumn>
+                                        <CommonTableColumn className="Admin_BoardList_BoardTitle">
+                                            <NoNotiveText>
+                                                공지글이 없습니다
+
+                                            </NoNotiveText>
                                         </CommonTableColumn>
-                                        <CommonTableColumn>{item.modifyDate}</CommonTableColumn>
-                                        <CommonTableColumn>{item.boardViewCount}</CommonTableColumn>
+                                        <CommonTableColumn></CommonTableColumn>
+                                        <CommonTableColumn></CommonTableColumn>
                                     </CommonTableRow>
-                                )) : '공지글이 없습니다'}
+                                }
                             </CommonTable>
                         ) :
                         (
                             <CommonTable headersName={[
                                 '글번호', '제목', '등록일', '조회수']}>
                                 {boardList.length > 0 ? boardList.map((item, index) => (
-                                    <CommonTableRow key={index}>
-                                        <CommonTableColumn>{noticeNumber(index)}</CommonTableColumn>
+                                        <CommonTableRow key={index}>
+                                            <CommonTableColumn  >{noticeNumber(index)}</CommonTableColumn>
+                                            <CommonTableColumn className="Admin_BoardList_BoardTitle" >
+                                                <Link to={`/admin/boardList/${item.boardId}`}>{item.boardTitle}</Link>
+                                            </CommonTableColumn>
+                                            <CommonTableColumn>{item.modifyDate}</CommonTableColumn>
+                                            <CommonTableColumn>{item.boardViewCount}</CommonTableColumn>
+                                        </CommonTableRow>
+                                    )) :
+                                    <CommonTableRow>
                                         <CommonTableColumn>
-                                            <Link to={`/user/notice/${item.boardId}`}>{item.boardTitle}</Link>
+
                                         </CommonTableColumn>
-                                        <CommonTableColumn>{item.modifyDate}</CommonTableColumn>
-                                        <CommonTableColumn>{item.boardViewCount}</CommonTableColumn>
+                                        <CommonTableColumn></CommonTableColumn>
+                                        <CommonTableColumn>
+                                            <NoNotiveText>
+                                                공지글이 없습니다
+
+                                            </NoNotiveText>
+                                        </CommonTableColumn>
+                                        <CommonTableColumn></CommonTableColumn>
+                                        <CommonTableColumn></CommonTableColumn>
                                     </CommonTableRow>
-                                )) : '공지글이 없습니다'}
+                                }
                             </CommonTable>
                         )}
 
@@ -387,7 +428,7 @@ function AdminNoticeListPage() {
                 </div>
 
 
-            </div>
+            </Wrap>
             <ChatBot />
         </>
 
@@ -405,8 +446,8 @@ const WriteSection = styled.section`
     padding-top: 74px;
     margin: 0 auto;
     width: 1024px;
-    border-bottom: 1px solid rgb(176, 184, 193);
-    
+    // border-bottom: 1px solid rgb(176, 184, 193);
+
     img{
         width: 26px;
         height: 26px;
@@ -416,46 +457,77 @@ const WriteSection = styled.section`
     }
 `;
 
+// 전체 감싸는 박스
+const Wrap = styled.div`
+    height: 1200px;
+    background: #eee;
+    // border: 1px solid red;
+`;
+const FormBox = styled.form`
+    width: 1044px;
+    display: flex;
+`;
+
+
 
 // 검색창
 const SearchInput = styled.input`
     display: flex;
     justify-content: center;
-    width: 1024px;
-    padding-bottom: 16px;
+    width: 800px;
+    margin-right: 20px;
     padding-left: 20px;
     border: none;
     outline: none;
-    //caret-color: rgb(49, 130, 246);
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 400;
-    line-height: 130%;
+    line-height: 100%;
     color: #333;
     min-height: 32px;
-    background: #eee;
+    background-color: transparent;
+    border-bottom: 1px solid rgb(176, 184, 193);
 `;
 
+const Button = styled.button`
+    width: 140px;
+    height: 45px;
+    border: 1px solid #cccccc;
+    border-radius: 2px;
+    background-color: #e5e8eb;
+    float: right;
+    font-size: 14px;
 
+    &:hover{
+        background-color: #1351f9;
+        color: #fff;
+    }
+`;
 
+// 페이지 제목
 const Header = styled.div`
     font-family: 'SUIT-Regular' !important;
-    color: rgb(51, 61, 75);
     font-size: 36px;
     font-weight: 800;
     // margin-bottom: 48px;
     padding-top: 74px;
-    text-align: left;
+    text-align: center;
     width: 1044px;
     margin: 0 auto;
     // margin-bottom: 48px;
-
-    .name-notice {
-        display: flex;
-        justify-content: center;
+    
+    span{
+        color: black;
     }
+`;
+
+const NoticeWriteDeleteButton = styled.div`
+
+    width: 1044px;
+    margin: 0 auto;
+
     //글쓰기 버튼
     .botom_write{
-        width: 120px;
+        width: 90px;
         height: 45px;
         border: 1px solid #cccccc;
         border-radius: 2px;
@@ -464,7 +536,7 @@ const Header = styled.div`
         float: right;
         color: #fff;
         // margin-top: 2px;
-        margin-left: 50px;
+        margin-left: 20px;
         position: relative;
         // bottom: -10px;
 
@@ -478,28 +550,25 @@ const Header = styled.div`
     }
     // 글 삭제 버튼
     .noticeDelete{
-                background-color: red;
-                        &:hover {
+        width: 90px;
+        height: 45px;
+        background-color: red;
+
+        &:hover {
             cursor: pointer;
             //border: 2px solid rgb(51, 61, 75);
             background-color:  #3182f6;;
         }
     }
-    .botom_write a{
-        font-size: 14px;
-        color: #fff;
-        //padding: 10px 25px;
-        text-align: center;
-        display: flex;
-        justify-content: center;
-        cursor: pointer;
-        // color: rgb(51, 61, 75);
 
-        &:hover {
-            cursor: pointer;
-            color: #fff;
-           font-weight: 600;
-        }
-    }
+
+
 `;
 
+// 공지글이 없을 때
+const NoNotiveText = styled.div`
+    width: 100%;
+    border: 1px solid red;
+    text-align: center;
+    font-size: 15px;
+`

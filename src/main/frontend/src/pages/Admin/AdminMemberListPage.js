@@ -61,7 +61,7 @@ function AdminMemberListPage() {
 
         if (!token) {
             alert("로그인이 필요합니다.");
-            navigate('/login');
+            navigate('/Login');
             return;
         }
 
@@ -81,12 +81,12 @@ function AdminMemberListPage() {
                 // 401 Unauthorized: 토큰 만료 또는 잘못된 토큰
                 alert("세션이 만료되었습니다. 다시 로그인해주세요.");
                 localStorage.removeItem('accessToken'); // 토큰 제거
-                navigate('/login');
+                navigate('/Login');
             } else {
                 // 기타 오류
                 console.error('Error fetching user info:', error);
                 alert("오류가 발생했습니다. 다시 로그인해주세요.");
-                navigate('/login');
+                navigate('/Login');
             }
         } finally {
             setIsLoading(false);
@@ -219,7 +219,7 @@ function AdminMemberListPage() {
     return (
         <>
             {/* 배경 wrap*/}
-            <div className="wrap" >
+            <Wrap>
 
                 {/* sidebar */}
                 <SideBar />
@@ -236,32 +236,36 @@ function AdminMemberListPage() {
                 </div>
 
                 {/* 회원 검색 */}
-                <FormBox onSubmit={handleSearch}>
-                    {/* 검색창 */}
-                    <SearchInput
-                        type="text"
-                        className="bottom_search_text"
-                        placeholder="검색어 입력"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                    {/* 검색 버튼 */}
-                    <Button
-                        className="search_submit"
-                        type="submit">
-                        검색
-                    </Button>
-                    {/* 삭제 버튼 */}
+                <WriteSection>
 
-                    <DeleteButton onClick={handleDeleteMembers}>회원 삭제</DeleteButton>
+                    <FormBox onSubmit={handleSearch}>
+                        {/* 검색창 */}
+                        <SearchInput
+                            type="text"
+                            className="bottom_search_text"
+                            placeholder="검색어 입력"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                        {/* 검색 버튼 */}
+                        <Button
+                            className="search_submit"
+                            type="submit">
+                            검색
+                        </Button>
 
-                </FormBox>
+                    </FormBox>
+                </WriteSection>
 
                 <div className="list_div">
                     {/* 회원 관리 제목*/}
-                    <div className="admin_member_haed">
+                    <Header>
                         <h2>회원 관리</h2>
-                    </div>
+                    </Header>
+                    <DeleteButtonDiv>
+                        <DeleteButton onClick={handleDeleteMembers}>회원 삭제</DeleteButton>
+                    </DeleteButtonDiv>
+
                     <AdminMemberList>
                         <div>
                             {/* 회원 관리 목차 */}
@@ -324,7 +328,7 @@ function AdminMemberListPage() {
                     {/* </div> */}
 
                 </div>
-            </div>
+            </Wrap>
             <ChatBot />
         </>
     );
@@ -334,16 +338,41 @@ function AdminMemberListPage() {
 export default AdminMemberListPage;
 
 
+const Wrap = styled.div`
+    height: 1100px;
+    background: #eee;
 
+`
+const Header = styled.div`
+
+    font-family: 'SUIT-Regular' !important;
+    // color: rgb(51, 61, 75);
+    font-size: 36px;
+    font-weight: 800;
+    padding-top: 74px;
+    text-align: center;
+    width: 1044px;
+    margin: 0 auto;
+
+
+`
+
+const DeleteButtonDiv = styled.div`
+    display: flex;
+    justify-content: right;
+    width: 1044px;
+    // border: 1px solid red;
+    margin: 0 auto;
+`
 
 const DeleteButton = styled.button`
 
-    width: 140px;
+    width: 90px;
     height: 45px;
     border: 1px solid #cccccc;
     border-radius: 2px;
     background-color: #e5e8eb;
-    float: right;
+    float: left;
     font-size: 14px;
     margin-left: 20px;
     background-color: red;
@@ -359,11 +388,11 @@ const DeleteButton = styled.button`
 
 // 검색창 전체 폼
 const FormBox = styled.form`
-    width: 1044px;
+    // width: 1044px;
     display: flex;
-    margin: 0 auto;
-    margin-bottom: 20px;
-    padding-top: 72px;
+    // margin: 0 auto;
+    // margin-bottom: 20px;
+    // padding-top: 72px;
 `;
 
 //Select
@@ -460,4 +489,20 @@ const AdminMemberList = styled.div`
     }
 `
 
-
+const WriteSection = styled.section`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 74px;
+    margin: 0 auto;
+    width: 1024px;
+    // border-bottom: 1px solid rgb(176, 184, 193);
+    
+    img{
+        width: 26px;
+        height: 26px;
+        margin-bottom: 10px;
+        margin-left: 20px;
+        opacity: 0.5;
+    }
+`;

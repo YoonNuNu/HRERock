@@ -4,6 +4,7 @@ import axios from 'axios';
 import SideBar from './SideBar';
 import home from "./images/home.svg";
 import ChatBot from '../../components/ChatBot/ChatBot';
+import styled from 'styled-components';
 
 function AdminMovieUploadFilePage() {
     const navigate = useNavigate();
@@ -62,7 +63,7 @@ function AdminMovieUploadFilePage() {
         const token = localStorage.getItem('accessToken');
         if (!token) {
             alert("로그인이 필요합니다.");
-            navigate('/login');
+            navigate('/Login');
             return;
         }
 
@@ -80,7 +81,7 @@ function AdminMovieUploadFilePage() {
         } catch (error) {
             console.error('Error fetching user info:', error);
             alert("오류가 발생했습니다. 다시 로그인해주세요.");
-            navigate('/login');
+            navigate('/Login');
         }
     }, [navigate]);
 
@@ -126,7 +127,7 @@ function AdminMovieUploadFilePage() {
 
     return (
         <>
-            <div className='wrap'>
+            <Wrap>
                 <SideBar />
                 <div className="admin_head">
                     <img src={home} alt="Home" />
@@ -231,10 +232,19 @@ function AdminMovieUploadFilePage() {
                         </form>
                     </div>
                 </div>
-            </div>
+            </Wrap>
             <ChatBot />
         </>
     );
 }
 
 export default AdminMovieUploadFilePage;
+
+const Wrap = styled.div`
+    height: 1000px;
+    background: #eee;
+
+
+
+
+`
