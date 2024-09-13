@@ -27,7 +27,6 @@ def generate_recommendations(mem_num, n=10):
         all_user_points_ratios_df = get_all_user_points_ratios_data(mem_num)
         user_movie_df = get_user_movie_data(mem_num)
         all_users_movie_df = get_all_user_movie_data(mem_num)
-        # user_points_data = get_user_points_data(mem_num)
 
         # logging.info(f"user_points_ratios_df: {user_points_ratios_df}")
         # logging.info(f"all_user_points_ratios_df: {all_user_points_ratios_df}")

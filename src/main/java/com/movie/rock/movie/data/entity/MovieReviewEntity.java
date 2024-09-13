@@ -10,6 +10,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -40,6 +43,9 @@ public class MovieReviewEntity extends BaseTimeEntity {
 
     @OneToOne(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private MovieReviewEmotionPointsEntity reviewEmotionPoints;
+
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReviewLikesEntity> likes = new ArrayList<>();
 
     @Builder
     private MovieReviewEntity(String reviewContent, double reviewRating, MemberEntity member, MovieEntity movie) {

@@ -569,8 +569,8 @@ const BtnLogin = styled.button`
   color: #fff;
   background: #1351f9;
   width: 100%;
-  height: 48px;
-  line-height: 48px;
+  height: 53px;
+  line-height: 53px;
   font-size: 16px;
 `;
 
@@ -656,7 +656,7 @@ const UiInputBtnCombo = styled.div`
 // 기타 사이즈
 const EmailsInput = styled.input`
     font-size: 14px;
-    height: 48px;
+    height: 53px;
     background: #fff;
     line-height: 16px;
     border: 1px solid #acacac;
@@ -674,7 +674,7 @@ const EmailsInput = styled.input`
 //기본 인 풋 박스
 const EmailInput = styled.input`
   font-size: 14px;
-  height: 48px;
+  height: 53px;
   background: #fff;
   line-height: 16px;
   border: 1px solid #acacac;
@@ -690,7 +690,7 @@ const EmailInput = styled.input`
 //전화번호 입력
 const PhoneInput = styled.input`
   font-size: 14px;
-  height: 48px;
+  height: 53px;
   background: #fff;
   line-height: 16px;
   border: 1px solid #acacac;
@@ -707,7 +707,7 @@ const PhoneInput = styled.input`
 const InputTextSizeWTypeL = styled.div`
   box-sizing: border-box;
   vertical-align: middle;
-  height: 48px;
+  height: 53px;
   display: block;
   width: 100%;
   margin-top: 10px;
@@ -718,7 +718,7 @@ const InputTextSizeWTypeL = styled.div`
 
 const EmailsButton = styled.button`
     width: 100px;
-    height: 50px;
+    height: 53px;
     //margin-right: 20px;
     text-align: center;
     //background-color: #1351f9;
@@ -745,7 +745,8 @@ const InputTextSizeW = styled.div`
   &.formError {
     cursor: default !important;
   }
-  display: block;
+  display: flex;
+  justify-content: space-evenly;  
   width: 100%;
   margin-top: 10px;
   text-align: left;

@@ -452,6 +452,7 @@ function AdminMovieUploadPage() {
 
                                             {type !== 'genre' && (
                                                 <button
+                                                    className="addPerson"
                                                     type="button"
                                                     onClick={() => type === 'actor' ? setIsActorModalOpen(true) : setIsDirectorModalOpen(true)}
                                                 >

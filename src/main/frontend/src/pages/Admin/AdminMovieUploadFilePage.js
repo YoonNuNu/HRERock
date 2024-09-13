@@ -134,16 +134,15 @@ function AdminMovieUploadFilePage() {
                     <h2>관리자페이지</h2>
                 </div>
                 <div className="admin_movie_head">
-                    <span>Admin {">"} 영화 관리 {">"} 새 영화 업로드 - 파일 정보</span>
+                    <span>Admin {">"} 영화 관리 {">"} 영화 추가 - 파일 정보</span>
                 </div>
-
                 <div className='UploadBody'>
                     <div className="AdminUploadHead">
-                        <h2>영화 업로드 - 파일 정보</h2>
+                        <h2>영화 추가 - 파일 정보</h2>
                     </div>
                     <div className="UploadInfo">
                         <div className="UploadTitleForm">
-                            <label className="ModifyMovieFile">
+                            <label className="ModifyMovieTitle">
                                 <div>제목:</div>
                                 <div>{movieTitle}</div>
                             </label>
@@ -155,38 +154,38 @@ function AdminMovieUploadFilePage() {
                                     <div>영화 URL:</div>
                                     <div>
                                         <input
+                                            className='modifyMovieInput'
                                             type="text"
                                             name="movieFilm"
-                                            value={movieData.movieFilm}
-                                            className='modifyMovieInput'
+                                            value={movieData.movieFilm.movieFilm}
                                             onChange={(e) => handleInputChange(e, null, 'movieFilm')}
                                             required
                                         />
                                     </div>
                                 </label>
                             </div>
+
                             {movieData.trailers.map((trailer, index) => (
                                 <div className='MovieUploadDiv' key={index} >
-                                    <label className='UploadMovieFileLabel'>
+                                    <label className='UploadMovieFileLabel' >
                                         <div>예고편 URL {index + 1}:</div>
                                         <div>
                                             <input
+                                                className='modifyMovieInput'
                                                 type="text"
                                                 name="trailerUrls"
-                                                className='modifyMovieInput'
                                                 value={trailer.trailerUrls}
                                                 onChange={(e) => handleInputChange(e, index, 'trailers')}
                                             />
                                         </div>
                                     </label>
-                                    {index === 0 && ( // 첫 번째 항목에만 체크박스 표시
+                                    {index === 0 && (
                                         <label className='UploadCheckBoxLabel' style={{ marginLeft: '10px' }}>
                                             <div>메인 예고편:</div>
                                             <div>
                                                 <input
                                                     type="checkbox"
                                                     name="mainTrailer"
-
                                                     checked={trailer.mainTrailer}
                                                     onChange={(e) => handleInputChange(e, index, 'trailers')}
                                                 />
@@ -197,20 +196,20 @@ function AdminMovieUploadFilePage() {
                             ))}
 
                             {movieData.posters.map((poster, index) => (
-                                <div className='MovieUploadDiv' key={index}>
+                                <div className='MovieUploadDiv' key={index} >
                                     <label className='UploadMovieFileLabel' >
                                         <div>포스터 URL {index + 1}:</div>
                                         <div>
                                             <input
+                                                className='modifyMovieInput'
                                                 type="text"
                                                 name="posterUrls"
-                                                className='modifyMovieInput'
                                                 value={poster.posterUrls}
                                                 onChange={(e) => handleInputChange(e, index, 'posters')}
                                             />
                                         </div>
                                     </label>
-                                    {index === 0 && ( // 첫 번째 항목에만 체크박스 표시
+                                    {index === 0 && (
                                         <label className='UploadCheckBoxLabel' style={{ marginLeft: '10px' }}>
                                             <div>메인 포스터:</div>
                                             <div>
@@ -237,6 +236,7 @@ function AdminMovieUploadFilePage() {
         </>
     );
 }
+
 
 export default AdminMovieUploadFilePage;
 

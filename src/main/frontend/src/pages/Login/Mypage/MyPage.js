@@ -312,19 +312,14 @@ const TitelBox = styled.div`
 
 //프로필 전환 버튼
 const EmailsButton = styled.button`
-    width: 120px;
-    height: 45px;
+    width: 100px;
+    height: 40px;
+    border-radius: 5px;
     margin-top: 57px;
-    padding: 0.5rem 0.833rem;
     font-size: 15px;
     text-align: center;
     background-color: #1351f9;
-    border: 2px solid #1351f9;
-    opacity: 0.7;
     color: #fff;
-    // margin-top: 1.8rem;
-    border-radius: 2px;
-    //margin-left: 20px;
     float: left;
 
     &:hover {

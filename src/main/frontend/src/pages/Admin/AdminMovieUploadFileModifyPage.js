@@ -188,8 +188,8 @@ function AdminMovieUploadFileModifyPage() {
                         </div>
 
                         <form onSubmit={handleSubmit} className="UploadInfoForm">
-                            <label className='ModifyMovieFile'>
-                                <label className='ModifyMovieFileLabel'>
+                            <div className='MovieUploadDiv'>
+                                <label className='UploadMovieFileLabel'>
                                     <div>영화 URL:</div>
                                     <div>
                                         <input
@@ -202,11 +202,11 @@ function AdminMovieUploadFileModifyPage() {
                                         />
                                     </div>
                                 </label>
-                            </label>
+                            </div>
 
                             {movieData.trailers.map((trailer, index) => (
-                                <label className='ModifyMovieFile' key={index} >
-                                    <label className='ModifyMovieFileLabel' >
+                                <div className='MovieUploadDiv' key={index} >
+                                    <label className='UploadMovieFileLabel' >
                                         <div>예고편 URL {index + 1}:</div>
                                         <div>
                                             <input
@@ -219,7 +219,7 @@ function AdminMovieUploadFileModifyPage() {
                                         </div>
                                     </label>
                                     {index === 0 && (
-                                        <label style={{ marginLeft: '10px' }}>
+                                        <label className='UploadCheckBoxLabel' style={{ marginLeft: '10px' }}>
                                             <div>메인 예고편:</div>
                                             <div>
                                                 <input
@@ -231,12 +231,12 @@ function AdminMovieUploadFileModifyPage() {
                                             </div>
                                         </label>
                                     )}
-                                </label>
+                                </div>
                             ))}
 
                             {movieData.posters.map((poster, index) => (
-                                <label className='ModifyMovieFile' key={index} >
-                                    <label className='ModifyMovieFileLabel' >
+                                <div className='MovieUploadDiv' key={index} >
+                                    <label className='UploadMovieFileLabel' >
                                         <div>포스터 URL {index + 1}:</div>
                                         <div>
                                             <input
@@ -249,7 +249,7 @@ function AdminMovieUploadFileModifyPage() {
                                         </div>
                                     </label>
                                     {index === 0 && (
-                                        <label style={{ marginLeft: '10px' }}>
+                                        <label className='UploadCheckBoxLabel' style={{ marginLeft: '10px' }}>
                                             <div>메인 포스터:</div>
                                             <div>
                                                 <input
@@ -261,7 +261,7 @@ function AdminMovieUploadFileModifyPage() {
                                             </div>
                                         </label>
                                     )}
-                                </label>
+                                </div>
                             ))}
 
                             <div>

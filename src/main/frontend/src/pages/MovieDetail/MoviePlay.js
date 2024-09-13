@@ -95,8 +95,8 @@ function MoviePlay() {
                 <ReactPlayer
                     ref={videoRef}
                     url={videoUrl}
-                    width="35%"
-                    height="35%"
+                    width="45%"
+                    height="45%"
                     controls={true}
                     playing={isPlaying}
                     onReady={handleReady}

@@ -41,6 +41,13 @@ export default function ProfileModal({updateProfileImage}) {
     // 프로필 사진 submit 관리
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // 선택한 이미지가 이전 이미지와 동일한지 확인
+        if (selectedImage === memberInfo.memProfile) {
+            alert("다른 이미지를 선택해주세요.");
+            return; // 동일할 경우 submit을 막음
+        }
+
         try {
             const accessToken = localStorage.getItem('accessToken');
 
@@ -56,22 +63,19 @@ export default function ProfileModal({updateProfileImage}) {
 
                 if (response.status === 200) {
                     updateProfileImage(selectedImage);
-                    setMemberInfo((prevInfo) => {
-                        const updatedInfo = {
-                            ...prevInfo,
-                            memProfile: selectedImage
-                        };
-                        console.log('Updated memberInfo:', updatedInfo); // 로그 추가
+                    setMemberInfo((prevInfo) => ({
+                        ...prevInfo,
+                        memProfile: selectedImage
+                    }));
 
-                        return updatedInfo;
-                    });
-
+                    // 프로필 업데이트 후 선택 상태를 초기화
+                    setSelectedImage(null);
                     alert("프로필 이미지가 성공적으로 업데이트되었습니다.");
                 } else {
                     alert("업데이트 실패: " + response.statusText);
                 }
             } else {
-                alert("다른 이미지를 선택해주세요.");
+                alert("이미지를 선택해주세요.");
             }
         } catch (error) {
             console.error("프로필 이미지 업데이트 중 오류 발생:", error);
@@ -90,9 +94,8 @@ export default function ProfileModal({updateProfileImage}) {
                             key={index}
                             src={img}
                             onClick={() => handleImageSelect(img)}
-                            isSelected={selectedImage === img || memberInfo.memProfile === img} // 선택된 이미지에 스타일 적용
+                            isSelected={selectedImage === img || (!selectedImage && memberInfo.memProfile === img)} // 선택된 이미지에 스타일 적용
                         />
-
                     ))}
                 </ImageSelectWrap>
                 <SubmitButton type="submit">변경 하기</SubmitButton>
@@ -100,6 +103,7 @@ export default function ProfileModal({updateProfileImage}) {
         </ProfileModalWrap>
     );
 }
+
 
 // 전체 모달 창
 const ProfileModalWrap = styled.div`
@@ -138,7 +142,7 @@ const ProfileImg = styled.img`
     cursor: pointer;
 
     // 선택되면 border변경
-    border: ${(props) => (props.isSelected ? '3px solid blue' : '')};
+    border: ${(props) => (props.isSelected ? '3px solid white' : 'none')};
 
     border-radius: 5px;
     &:hover {
@@ -155,6 +159,7 @@ const SubmitButton = styled.button`
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 15px;
 
     // 커서 올릴 시
     &:hover {
