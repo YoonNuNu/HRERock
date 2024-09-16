@@ -63,7 +63,8 @@
 ![image](https://github.com/user-attachments/assets/5c50e200-db18-422e-8ced-23daf6265f54)
 
 # 📂폴더구조
-![image](https://github.com/user-attachments/assets/a50636cc-0e17-4675-8168-708111679122)
+![image](https://github.com/user-attachments/assets/6caf035d-9fd3-4bf4-81c6-8ee24690ce23)
+
 
 
 
