@@ -62,7 +62,8 @@
 
 
 주요 구성:
-- `data_visualization`: 프론트엔드 관련 파일들
+- `data_visualization`: 파이썬 모듈
+- `src/forntend`: React 프론트앤드 코드
 - `src/java`: Java 백엔드 코드
 - `src/python`: Python 스크립트 및 데이터 처리 관련 파일들
 - 루트 디렉토리: 프로젝트 설정 및 빌드, 임시 생성 관련 파일들
