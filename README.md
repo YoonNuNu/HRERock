@@ -1,4 +1,6 @@
 # 🎥HRERock
+![image](https://github.com/user-attachments/assets/9ec816e1-ff2c-4794-867d-ec6fcf9b66dd)
+
 
 # 📄프로젝트 소개
 ![image](https://github.com/user-attachments/assets/c8e44710-e5a1-4acb-9068-bf534f994639)
@@ -54,61 +56,13 @@
 # 🛠기술 스택
 ![image](https://github.com/user-attachments/assets/5c50e200-db18-422e-8ced-23daf6265f54)
 
-# 📂폴더구
-HRERock/
-├── .gradle/
-├── .idea/
-├── build/
-├── data_visualization/
-│   ├── data_visualization.iml
-│   ├── gradle/
-│   └── src/
-│       └── main/
-│           └── frontend/
-│               ├── node_modules/
-│               ├── public/
-│               ├── src/
-│               │   ├── api/
-│               │   ├── components/
-│               │   ├── Hooks/
-│               │   ├── pages/
-│               │   ├── styles/
-│               │   ├── index.js
-│               │   ├── Layout.js
-│               │   └── Router.js
-│               ├── .gitignore
-│               ├── package.json
-│               └── package-lock.json
-├── gradle/
-├── src/
-│   ├── java/
-│   │   └── com.movie.rock/
-│   │       ├── admin/
-│   │       ├── board/
-│   │       ├── chat/
-│   │       ├── common/
-│   │       ├── config/
-│   │       ├── file/
-│   │       ├── member/
-│   │       ├── movie/
-│   │       ├── pythonData/
-│   │       └── RockApplication
-│   ├── python/
-│   │   ├── charts/
-│   │   ├── data/
-│   │   ├── recommend/
-│   │   ├── movie_main.py
-│   │   ├── personal_main.py
-│   │   ├── project_util.py
-│   │   └── recommend_main.py
-│   └── resources/
-├── test/
-├── venv/
-├── .gitignore
-├── build.gradle
-├── gradlew
-├── gradlew.bat
-├── README.md
-├── requirements.txt
-└── settings.gradle
+# 📂폴더구조
+![image](https://github.com/user-attachments/assets/0aa0ab5c-22ff-419a-ad20-8b974a294ada)
 
+
+
+주요 구성:
+- `data_visualization`: 프론트엔드 관련 파일들
+- `src/java`: Java 백엔드 코드
+- `src/python`: Python 스크립트 및 데이터 처리 관련 파일들
+- 루트 디렉토리: 프로젝트 설정 및 빌드, 임시 생성 관련 파일들
